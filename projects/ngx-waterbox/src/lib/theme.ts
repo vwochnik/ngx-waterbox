@@ -2,13 +2,13 @@ import { Theme } from "./types";
 
 export function getDefaultTheme(): Theme {
     return {
-        strokeColor: 'rgba(0, 0, 0, 0.6)',
-        containerColor: '#aaa',
-        fillColor: 'rgba(192, 192, 255, 0.6)',
+        strokeColor: 'rgba(0, 0, 0, 0.8)',
+        containerColor: '#b0b0b0',
+        fillColor: 'rgba(96, 96, 255, 0.6)',
         strokeWidth: 0.5,
         separators: 5,
         drawTop: false,
-        contrast: 20
+        contrast: 15
     };
 }
 
