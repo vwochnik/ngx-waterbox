@@ -2,9 +2,9 @@ import { Theme } from "./types";
 
 export function getDefaultTheme(): Theme {
     return {
-        strokeColor: '#000';
-        containerColor: '#aaa';
-        fillColor: '#88f';
+        strokeColor: '#000',
+        containerColor: '#aaa',
+        fillColor: '#88f',
         strokeWidth: 2,
         separators: 5,
         drawTop: false,

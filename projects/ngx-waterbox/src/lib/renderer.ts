@@ -1,17 +1,5 @@
+import { Theme } from './types';
 import { lighten, darken } from './color';
-
-export interface RenderingOptions {
-    width: number,
-    height: number,
-    strokeColor: string,
-    fillColor: string,
-    boxColor: string,
-    strokeWidth: number,
-    separators: number,
-    drawTop: boolean,
-    contrast: number,
-    value:number
-}
 
 interface Area {
     x: number,
@@ -25,15 +13,15 @@ interface Size {
     h: number
 }
 
-export default function renderer(ctx: CanvasRenderingContext2D, options: RenderingOptions): void {
-    const { width, height, strokeColor, fillColor, boxColor, strokeWidth, separators, drawTop, contrast, value } = options;
+export function renderer(ctx: CanvasRenderingContext2D, value: number, width: number, height: number, theme: Theme): void {
+    const { strokeColor, fillColor, containerColor, strokeWidth, separators, drawTop, contrast } = theme;
 
-    const boxColorLight = lighten(boxColor, contrast),
-          boxColorDark = darken(boxColor, contrast),
+    const containerColorLight = lighten(containerColor, contrast),
+          containerColorDark = darken(containerColor, contrast),
           fillColorLight = lighten(fillColor, contrast),
           fillColorDark = darken(fillColor, contrast);
 
-    ctx.clearRect(0, 0, options.width, options.height);
+    ctx.clearRect(0, 0, width, height);
 
     ctx.strokeStyle = strokeColor;
     ctx.lineWidth = strokeWidth;
@@ -45,19 +33,19 @@ export default function renderer(ctx: CanvasRenderingContext2D, options: Renderi
 
     const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
     rhombusPath(ctx, bottomRhombusArea);
-    ctx.fillStyle = boxColor;
+    ctx.fillStyle = containerColor;
     ctx.fill();
     ctx.stroke();
 
     const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
     wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
-    ctx.fillStyle = boxColorLight;
+    ctx.fillStyle = containerColorLight;
     ctx.fill();
     ctx.stroke();
 
     const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
     wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
-    ctx.fillStyle = boxColorDark;
+    ctx.fillStyle = containerColorDark;
     ctx.fill();
     ctx.stroke();
 
@@ -108,7 +96,7 @@ export default function renderer(ctx: CanvasRenderingContext2D, options: Renderi
 
     const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
     rhombusPath(ctx, topRhombusArea);
-    ctx.fillStyle = boxColor;
+    ctx.fillStyle = containerColor;
     ctx.fill();
     ctx.stroke();
 }
