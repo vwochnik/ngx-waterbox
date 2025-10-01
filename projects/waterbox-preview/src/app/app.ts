@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal, DestroyRef } from '@angular/core';
 
 import { Waterbox } from 'ngx-waterbox';
 
@@ -9,5 +9,15 @@ import { Waterbox } from 'ngx-waterbox';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('waterbox-preview');
+  destroyRef = inject(DestroyRef);
+
+  value = signal<number>(0);
+
+  constructor() {
+    const interval = setInterval(() => {
+      this.value.update(v => (v + 1) % 100);
+    }, 50);
+
+    this.destroyRef.onDestroy(() => clearInterval(interval));
+  }
 }
