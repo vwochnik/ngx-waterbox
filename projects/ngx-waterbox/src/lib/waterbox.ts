@@ -1,4 +1,7 @@
-import { Component, inject, ElementRef, DestroyRef, signal, input, viewChild, effect } from '@angular/core';
+import { Component, inject, ElementRef, DestroyRef, AfterViewInit, signal, input, viewChild, effect } from '@angular/core';
+
+import { Theme } from './types';
+import {getDefaultTheme, getFromCssVariables } from './theme';
 
 @Component({
   selector: 'ngx-waterbox',
@@ -15,7 +18,7 @@ import { Component, inject, ElementRef, DestroyRef, signal, input, viewChild, ef
     }
   `
 })
-export class Waterbox {
+export class Waterbox implements AfterViewInit {
   destroyRef = inject(DestroyRef);
   el = inject(ElementRef);
   canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
@@ -24,6 +27,8 @@ export class Waterbox {
 
   width = signal<number>(0);
   height = signal<number>(0);
+
+  theme = signal<Theme>(getDefaultTheme());
 
   constructor() {
     const observer = new ResizeObserver((entries) => {
@@ -54,6 +59,10 @@ export class Waterbox {
       const canvas = this.canvas();
       this.render(canvas.nativeElement, width, height, value);
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.theme.set(getFromCssVariables(this.el.nativeElement));
   }
 
   render(element: HTMLCanvasElement, width: number, height: number, value: number) {
