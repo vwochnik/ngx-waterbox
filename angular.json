@@ -3,5 +3,31 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
+    "ngx-waterbox": {
+      "projectType": "library",
+      "root": "projects/ngx-waterbox",
+      "sourceRoot": "projects/ngx-waterbox/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-waterbox/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-waterbox/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/ngx-waterbox/tsconfig.spec.json"
+          }
+        }
+      }
+    }
   }
 }
