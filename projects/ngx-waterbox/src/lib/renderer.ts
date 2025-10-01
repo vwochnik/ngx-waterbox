@@ -14,16 +14,17 @@ interface Size {
 }
 
 export function renderer(ctx: CanvasRenderingContext2D, value: number, width: number, height: number, theme: Theme): void {
-    const { strokeColor, fillColor, containerColor, strokeWidth, separators, drawTop, contrast } = theme;
+    const { fillColor, containerColor, strokeWidth, separators, drawTop, contrast } = theme;
 
-    const containerColorLight = lighten(containerColor, contrast),
+    const containerStrokeColor = darken(containerColor, 3*contrast),
+          containerColorLight = lighten(containerColor, contrast),
           containerColorDark = darken(containerColor, contrast),
+          fillStrokeColor = darken(fillColor, 3*contrast),
           fillColorLight = lighten(fillColor, contrast),
           fillColorDark = darken(fillColor, contrast);
 
     ctx.clearRect(0, 0, width, height);
 
-    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = strokeWidth;
     ctx.lineCap = "round";
 
@@ -33,18 +34,21 @@ export function renderer(ctx: CanvasRenderingContext2D, value: number, width: nu
 
     const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
     rhombusPath(ctx, bottomRhombusArea);
+    ctx.strokeStyle = containerStrokeColor;
     ctx.fillStyle = containerColor;
     ctx.fill();
     ctx.stroke();
 
     const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
     wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
+    ctx.strokeStyle = containerStrokeColor;
     ctx.fillStyle = containerColorLight;
     ctx.fill();
     ctx.stroke();
 
     const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
     wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
+    ctx.strokeStyle = containerStrokeColor;
     ctx.fillStyle = containerColorDark;
     ctx.fill();
     ctx.stroke();
@@ -65,18 +69,21 @@ export function renderer(ctx: CanvasRenderingContext2D, value: number, width: nu
 
         const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
         wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
+        ctx.strokeStyle = fillStrokeColor;
         ctx.fillStyle = fillColorDark;
         ctx.fill();
         ctx.stroke();
 
         const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
         wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
+        ctx.strokeStyle = fillStrokeColor;
         ctx.fillStyle = fillColorLight;
         ctx.fill();
         ctx.stroke();
 
         const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
         rhombusPath(ctx, fillTopRhombusArea);
+        ctx.strokeStyle = fillStrokeColor;
         ctx.fillStyle = fillColor;
         ctx.fill();
         ctx.stroke();
@@ -88,14 +95,17 @@ export function renderer(ctx: CanvasRenderingContext2D, value: number, width: nu
 
     const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
     wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
+    ctx.strokeStyle = containerStrokeColor;
     ctx.stroke();
 
     const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
     wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
+    ctx.strokeStyle = containerStrokeColor;
     ctx.stroke();
 
     const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
     rhombusPath(ctx, topRhombusArea);
+    ctx.strokeStyle = containerStrokeColor;
     ctx.fillStyle = containerColor;
     ctx.fill();
     ctx.stroke();

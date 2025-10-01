@@ -1,6 +1,9 @@
 import { TinyColor } from '@ctrl/tinycolor';
 
 export function lighten(color: string, amount: number): string {
+	if (color === "transparent") {
+		return color;
+	}
 	const col = new TinyColor(color),
 		  brightness = col.getBrightness() / 255.0,
 	      multiplier = 1.0 - 0.5*brightness;
@@ -9,6 +12,9 @@ export function lighten(color: string, amount: number): string {
 }
 
 export function darken(color: string, amount: number): string {
+	if (color === "transparent") {
+		return color;
+	}
 	const col = new TinyColor(color),
 		  brightness = col.getBrightness() / 255.0,
 	      multiplier = 1.0 - 0.5*brightness;
