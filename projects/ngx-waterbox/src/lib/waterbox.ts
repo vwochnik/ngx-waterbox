@@ -4,8 +4,7 @@ import { Component, inject, ElementRef, DestroyRef, signal, input, viewChild, ef
   selector: 'ngx-waterbox',
   imports: [],
   template: `
-    <!--canvas #canvas [width]="width()" [height]="height()"></canvas-->
-    <canvas #canvas width="400" height="400"></canvas>
+    <canvas #canvas></canvas>
   `,
   styles: `
     :host {
@@ -39,6 +38,14 @@ export class Waterbox {
 
     this.destroyRef.onDestroy(() => observer.disconnect());
     observer.observe(this.el.nativeElement);
+
+    effect(() => {
+      const width = this.width();
+      const height = this.height();
+      const canvas = this.canvas();
+      canvas.nativeElement.width = width;
+      canvas.nativeElement.height = height;
+    })
 
     effect(() => {
       const value = this.value();
