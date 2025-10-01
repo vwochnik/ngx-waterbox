@@ -7,7 +7,7 @@
       "projectType": "library",
       "root": "projects/ngx-waterbox",
       "sourceRoot": "projects/ngx-waterbox/src",
-      "prefix": "lib",
+      "prefix": "ngx",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
@@ -25,6 +25,84 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/ngx-waterbox/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "waterbox-preview": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/waterbox-preview",
+      "sourceRoot": "projects/waterbox-preview/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/waterbox-preview/src/main.ts",
+            "tsConfig": "projects/waterbox-preview/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/waterbox-preview/public"
+              }
+            ],
+            "styles": [
+              "projects/waterbox-preview/src/styles.css"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "waterbox-preview:build:production"
+            },
+            "development": {
+              "buildTarget": "waterbox-preview:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/waterbox-preview/tsconfig.spec.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/waterbox-preview/public"
+              }
+            ],
+            "styles": [
+              "projects/waterbox-preview/src/styles.css"
+            ]
           }
         }
       }

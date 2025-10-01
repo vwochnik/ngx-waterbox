@@ -9,7 +9,7 @@
     "noImplicitReturns": true,
     "paths": {
       "ngx-waterbox": [
-        "./dist/ngx-waterbox"
+        "./projects/ngx-waterbox/src/public-api.ts"
       ]
     },
     "noFallthroughCasesInSwitch": true,
@@ -34,6 +34,12 @@
     },
     {
       "path": "./projects/ngx-waterbox/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/waterbox-preview/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/waterbox-preview/tsconfig.spec.json"
     }
   ]
 }
