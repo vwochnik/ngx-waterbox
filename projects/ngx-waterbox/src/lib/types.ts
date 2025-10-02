@@ -1,7 +1,7 @@
 export interface Theme {
     strokeColor: string;
     containerColor: string;
-    fillColor: string;
+    waterColor: string;
     strokeWidth: number;
     separators: number;
     drawTop: boolean;

@@ -1,10 +1,14 @@
 import { Theme } from "./types";
 
+interface ThemeProperty {
+    key: keyof Theme;
+
+}
 export function getDefaultTheme(): Theme {
     return {
         strokeColor: 'rgba(0, 0, 0, 0.8)',
         containerColor: '#b0b0b0',
-        fillColor: 'rgba(96, 96, 255, 0.6)',
+        waterColor: 'rgba(96, 96, 255, 0.6)',
         strokeWidth: 0.5,
         separators: 5,
         drawTop: false,
@@ -19,7 +23,7 @@ export function getFromCssVariables(element: HTMLElement): Theme {
 
     result.containerColor = cssStringVariable(element, "waterbox-container-color", result.containerColor);
 
-    result.fillColor = cssStringVariable(element, "waterbox-fill-color", result.fillColor);
+    result.waterColor = cssStringVariable(element, "waterbox-water-color", result.waterColor);
 
     result.strokeWidth = cssNumericVariable(element, "waterbox-stroke-width", result.strokeWidth);
 
@@ -53,4 +57,14 @@ function cssNumericVariable(element: HTMLElement, v: string, def: number) {
     const n = parseFloat(r);
     if (isNaN(n)) { return def; }
     return n;
+}
+
+function setThemeProperty<K extends string>(
+  obj: Theme,
+  key: K,
+  value: unknown
+) {
+  if (key in obj) {
+    (obj as any)[key] = value;
+  }
 }

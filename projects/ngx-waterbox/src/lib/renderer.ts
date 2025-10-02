@@ -14,14 +14,14 @@ interface Size {
 }
 
 export function renderer(ctx: CanvasRenderingContext2D, value: number, width: number, height: number, theme: Theme): void {
-    const { fillColor, containerColor, strokeWidth, separators, drawTop, contrast } = theme;
+    const { waterColor, containerColor, strokeWidth, separators, drawTop, contrast } = theme;
 
     const containerStrokeColor = darken(containerColor, 3*contrast),
           containerColorLight = lighten(containerColor, contrast),
           containerColorDark = darken(containerColor, contrast),
-          fillStrokeColor = darken(fillColor, 3*contrast),
-          fillColorLight = lighten(fillColor, contrast),
-          fillColorDark = darken(fillColor, contrast);
+          waterStrokeColor = darken(waterColor, 3*contrast),
+          waterColorLight = lighten(waterColor, contrast),
+          waterColorDark = darken(waterColor, contrast);
 
     ctx.clearRect(0, 0, width, height);
 
@@ -44,7 +44,9 @@ export function renderer(ctx: CanvasRenderingContext2D, value: number, width: nu
     ctx.strokeStyle = containerStrokeColor;
     ctx.fillStyle = containerColorLight;
     ctx.fill();
+    ctx.globalCompositeOperation = "destination-out";
     ctx.stroke();
+    ctx.globalCompositeOperation = "source-over";
 
     const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
     wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
@@ -69,22 +71,22 @@ export function renderer(ctx: CanvasRenderingContext2D, value: number, width: nu
 
         const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
         wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
-        ctx.strokeStyle = fillStrokeColor;
-        ctx.fillStyle = fillColorDark;
+        ctx.strokeStyle = waterStrokeColor;
+        ctx.fillStyle = waterColorDark;
         ctx.fill();
         ctx.stroke();
 
         const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
         wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
-        ctx.strokeStyle = fillStrokeColor;
-        ctx.fillStyle = fillColorLight;
+        ctx.strokeStyle = waterStrokeColor;
+        ctx.fillStyle = waterColorLight;
         ctx.fill();
         ctx.stroke();
 
         const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
         rhombusPath(ctx, fillTopRhombusArea);
-        ctx.strokeStyle = fillStrokeColor;
-        ctx.fillStyle = fillColor;
+        ctx.strokeStyle = waterStrokeColor;
+        ctx.fillStyle = waterColor;
         ctx.fill();
         ctx.stroke();
     }
