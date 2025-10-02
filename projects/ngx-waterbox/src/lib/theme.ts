@@ -19,19 +19,49 @@ type ThemeProperty = ThemePropertyMap[keyof Theme];
 
 const THEME_PROPERTIES: ThemeProperty[] = [
     {
-        key: "strokeColor",
+        key: "containerFillColor",
         type: "string",
-        default: "black",
-        variable: "stroke-color"
+        default: "gray",
+        variable: "container-fill-color"
     },
     {
-        key: "containerColor",
+        key: "containerFillColorLight",
+        type: "string",
+        default: "gray",
+        variable: "container-fill-color-light"
+    },
+    {
+        key: "containerFillColorDark",
+        type: "string",
+        default: "gray",
+        variable: "container-fill-color-dark"
+    },
+    {
+        key: "containerStrokeColor",
         type: "string",
         default: "gray",
         variable: "container-color"
     },
     {
-        key: "waterColor",
+        key: "waterFillColor",
+        type: "string",
+        default: "blue",
+        variable: "water-fill-color"
+    },
+    {
+        key: "waterFillColorLight",
+        type: "string",
+        default: "blue",
+        variable: "water-fill-color-light"
+    },
+    {
+        key: "waterFillColorDark",
+        type: "string",
+        default: "blue",
+        variable: "water-fill-color-dark"
+    },
+    {
+        key: "waterStrokeColor",
         type: "string",
         default: "blue",
         variable: "water-color"
@@ -53,12 +83,6 @@ const THEME_PROPERTIES: ThemeProperty[] = [
         type: "boolean",
         default: false,
         variable: "draw-top"
-    },
-    {
-        key: "contrast",
-        type: "number",
-        default: 20,
-        variable: "contrast"
     }
 ];
 
