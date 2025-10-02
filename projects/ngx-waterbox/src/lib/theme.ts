@@ -1,70 +1,120 @@
 import { Theme } from "./types";
 
-interface ThemeProperty {
-    key: keyof Theme;
+type ThemePropertyMap = {
+  [K in keyof Theme]: {
+    key: K;
+    type: Theme[K] extends string
+      ? "string"
+      : Theme[K] extends number
+      ? "number"
+      : Theme[K] extends boolean
+      ? "boolean"
+      : never;
+    default: Theme[K];
+    variable: string;
+  };
+};
 
-}
+type ThemeProperty = ThemePropertyMap[keyof Theme];
+
+const THEME_PROPERTIES: ThemeProperty[] = [
+    {
+        key: "strokeColor",
+        type: "string",
+        default: "black",
+        variable: "stroke-color"
+    },
+    {
+        key: "containerColor",
+        type: "string",
+        default: "gray",
+        variable: "container-color"
+    },
+    {
+        key: "waterColor",
+        type: "string",
+        default: "blue",
+        variable: "water-color"
+    },
+    {
+        key: "strokeWidth",
+        type: "number",
+        default: 0.5,
+        variable: "stroke-width"
+    },
+    {
+        key: "separators",
+        type: "number",
+        default: 5,
+        variable: "separators"
+    },
+    {
+        key: "drawTop",
+        type: "boolean",
+        default: false,
+        variable: "draw-top"
+    },
+    {
+        key: "contrast",
+        type: "number",
+        default: 20,
+        variable: "contrast"
+    }
+];
+
 export function getDefaultTheme(): Theme {
-    return {
-        strokeColor: 'rgba(0, 0, 0, 0.8)',
-        containerColor: '#b0b0b0',
-        waterColor: 'rgba(96, 96, 255, 0.6)',
-        strokeWidth: 0.5,
-        separators: 5,
-        drawTop: false,
-        contrast: 15
-    };
+    return THEME_PROPERTIES.reduce((theme, property) => {
+        return {
+            ...theme,
+            [property.key]: property.default
+        };
+    }, {} as Theme);
 }
 
 export function getFromCssVariables(element: HTMLElement): Theme {
-    const result = getDefaultTheme();
-
-    result.strokeColor = cssStringVariable(element, "waterbox-stroke-color", result.strokeColor);
-
-    result.containerColor = cssStringVariable(element, "waterbox-container-color", result.containerColor);
-
-    result.waterColor = cssStringVariable(element, "waterbox-water-color", result.waterColor);
-
-    result.strokeWidth = cssNumericVariable(element, "waterbox-stroke-width", result.strokeWidth);
-
-    result.separators = cssNumericVariable(element, "waterbox-separators", result.separators);
-
-    result.drawTop = cssBooleanVariable(element, "waterbox-draw-top", result.drawTop);
-
-    result.contrast = cssNumericVariable(element, "waterbox-contrast", result.contrast);
-
-    return result;
+    return THEME_PROPERTIES
+        .reduce((theme, property) => {
+            let value: string | number | boolean | null = null;
+            switch (property.type) {
+            case 'boolean':
+                value = cssBooleanVariable(element, property.variable);
+                break;
+            case 'string':
+                value = cssStringVariable(element, property.variable);
+                break;
+            case 'number':
+                value = cssNumericVariable(element, property.variable);
+                break;
+            }
+            if (value !== null) {
+                return {
+                    ...theme,
+                    [property.key]: value
+                };
+            }
+            return theme;
+        }, getDefaultTheme());
 }
 
-function cssStringVariable(element: HTMLElement, v: string, def: string): string {
-    const r = getComputedStyle(element).getPropertyValue(`--${v}`);
-    if (!r) { return def; }
+function cssStringVariable(element: HTMLElement, v: string): string | null {
+    const r = getComputedStyle(element).getPropertyValue(`--waterbox-${v}`);
+    if (!r) return null;
     return r;
 }
 
-function cssBooleanVariable(element: HTMLElement, v: string, def: boolean) {
-    const r = cssStringVariable(element, v, `${def}`);
+function cssBooleanVariable(element: HTMLElement, v: string): boolean | null {
+    const r = cssStringVariable(element, v);
+    if (r === null) return null;
     if (r.toLowerCase() === "true") {
         return true;
-    } else if (r.toLowerCase() === "false") {
-        return false;
     }
-    return def;
+    return false;
 }
 
-function cssNumericVariable(element: HTMLElement, v: string, def: number) {
-    const r = cssStringVariable(element, v, `${def}`);
+function cssNumericVariable(element: HTMLElement, v: string): number | null {
+    const r = cssStringVariable(element, v);
+    if (r === null) return null;
     const n = parseFloat(r);
-    if (isNaN(n)) { return def; }
+    if (isNaN(n)) { return null; }
     return n;
-}
-
-function setThemeProperty<K extends string>(
-  obj: Theme,
-  key: K,
-  value: unknown
-) {
-  if (key in obj) {
-    (obj as any)[key] = value;
-  }
 }
