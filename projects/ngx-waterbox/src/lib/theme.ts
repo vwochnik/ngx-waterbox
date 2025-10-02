@@ -21,49 +21,49 @@ const THEME_PROPERTIES: ThemeProperty[] = [
     {
         key: "containerFillColor",
         type: "string",
-        default: "gray",
+        default: "rgb(127,127,127)",
         variable: "container-fill-color"
     },
     {
         key: "containerFillColorLight",
         type: "string",
-        default: "gray",
+        default: "rgb(159,159,159)",
         variable: "container-fill-color-light"
     },
     {
         key: "containerFillColorDark",
         type: "string",
-        default: "gray",
+        default: "rgb(95,95,95)",
         variable: "container-fill-color-dark"
     },
     {
         key: "containerStrokeColor",
         type: "string",
-        default: "gray",
+        default: "rgb(32,32,32)",
         variable: "container-color"
     },
     {
         key: "waterFillColor",
         type: "string",
-        default: "blue",
+        default: "rgba(64,64,127,0.6)",
         variable: "water-fill-color"
     },
     {
         key: "waterFillColorLight",
         type: "string",
-        default: "blue",
+        default: "rgba(83, 83, 167, 0.6)",
         variable: "water-fill-color-light"
     },
     {
         key: "waterFillColorDark",
         type: "string",
-        default: "blue",
+        default: "rgba(25, 25, 77, 0.6)",
         variable: "water-fill-color-dark"
     },
     {
         key: "waterStrokeColor",
         type: "string",
-        default: "blue",
+        default: "rgba(39, 39, 96, 0.6)",
         variable: "water-color"
     },
     {
