@@ -1,8 +1,8 @@
-import { Component, inject, ElementRef, DestroyRef, AfterViewInit, signal, input, viewChild, effect } from '@angular/core';
+import { Component, inject, ElementRef, DestroyRef, AfterViewInit, signal, input, viewChild, effect, computed } from '@angular/core';
 
 import { Theme } from './types';
 import { getDefaultTheme, getFromCssVariables } from './theme';
-import { renderer } from './renderer';
+import { Renderer } from './renderer';
 
 @Component({
   selector: 'ngx-waterbox',
@@ -29,6 +29,13 @@ export class Waterbox implements AfterViewInit {
   width = signal<number>(0);
   height = signal<number>(0);
 
+  renderer = computed(() => {
+      const width = this.width();
+      const height = this.height();
+      const canvas = this.canvas();
+      return Renderer(canvas.nativeElement, width, height);
+  })
+
   theme = signal<Theme>(getDefaultTheme());
 
   constructor() {
@@ -38,7 +45,6 @@ export class Waterbox implements AfterViewInit {
         const newHeight = entry.contentRect.height;
         this.width.set(newWidth);
         this.height.set(newHeight);
-        console.info("fire", {newWidth, newHeight});
       }
     });
 
@@ -46,33 +52,14 @@ export class Waterbox implements AfterViewInit {
     observer.observe(this.el.nativeElement);
 
     effect(() => {
-      const width = this.width();
-      const height = this.height();
-      const canvas = this.canvas();
-      canvas.nativeElement.width = width;
-      canvas.nativeElement.height = height;
-    })
-
-    effect(() => {
       const value = this.value();
-      const width = this.width();
-      const height = this.height();
       const theme = this.theme();
-      const canvas = this.canvas();
-      this.render(canvas.nativeElement, width, height, value, theme);
+      const renderer = this.renderer();
+      renderer(value, theme);
     });
   }
 
   ngAfterViewInit(): void {
     this.theme.set(getFromCssVariables(this.el.nativeElement));
-  }
-
-  render(element: HTMLCanvasElement, width: number, height: number, value: number, theme: Theme) {
-    const ctx = element.getContext("2d");
-    if (!ctx) {
-      return;
-    }
-
-    renderer(ctx, value, width, height, theme);
   }
 }

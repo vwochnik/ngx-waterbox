@@ -12,126 +12,136 @@ interface Size {
     h: number
 }
 
-export function renderer(ctx: CanvasRenderingContext2D, value: number, width: number, height: number, theme: Theme): void {
-    const {
-        waterFillColor,
-        waterFillColorLight,
-        waterFillColorDark,
-        waterStrokeColor,
-        containerFillColor,
-        containerFillColorLight,
-        containerFillColorDark,
-        containerStrokeColor,
-        strokeWidth, separators,
-        drawTop
-    } = theme;
+export function Renderer(canvas: HTMLCanvasElement, width: number, height: number) {
+    canvas.width = width;
+    canvas.height = height;
 
-    ctx.clearRect(0, 0, width, height);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+        return function() {};
+    }
 
-    ctx.lineWidth = strokeWidth;
-    ctx.lineCap = "round";
+    return function(value: number, theme: Theme): void {
+        const {
+            waterFillColor,
+            waterFillColorLight,
+            waterFillColorDark,
+            waterStrokeColor,
+            containerFillColor,
+            containerFillColorLight,
+            containerFillColorDark,
+            containerStrokeColor,
+            strokeWidth, separators,
+            drawTop
+        } = theme;
 
-    const actualWidth = Math.min(width, height),
-          rect: Area = { x: width/2 - actualWidth/2 + strokeWidth/2, y: strokeWidth/2, w: actualWidth - strokeWidth - 1, h: height - strokeWidth - 1 },
-          size: Size = { w: rect.w, h: rect.w/2 };
+        ctx.clearRect(0, 0, width, height);
 
-    const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
-    rhombusPath(ctx, bottomRhombusArea);
-    ctx.strokeStyle = containerStrokeColor;
-    ctx.fillStyle = containerFillColor;
-    ctx.fill();
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.stroke();
-    ctx.globalCompositeOperation = "source-over";
+        ctx.lineWidth = strokeWidth;
+        ctx.lineCap = "round";
 
-    const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
-    wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
-    ctx.strokeStyle = containerStrokeColor;
-    ctx.fillStyle = containerFillColorLight;
-    ctx.fill();
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.stroke();
-    ctx.globalCompositeOperation = "source-over";
+        const actualWidth = Math.min(width, height),
+            rect: Area = { x: width/2 - actualWidth/2 + strokeWidth/2, y: strokeWidth/2, w: actualWidth - strokeWidth - 1, h: height - strokeWidth - 1 },
+            size: Size = { w: rect.w, h: rect.w/2 };
 
-    const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
-    wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
-    ctx.strokeStyle = containerStrokeColor;
-    ctx.fillStyle = containerFillColorDark;
-    ctx.fill();
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.stroke();
-    ctx.globalCompositeOperation = "source-over";
+        const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
+        rhombusPath(ctx, bottomRhombusArea);
+        ctx.strokeStyle = containerStrokeColor;
+        ctx.fillStyle = containerFillColor;
+        ctx.fill();
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.stroke();
+        ctx.globalCompositeOperation = "source-over";
 
-    if (separators > 1) {
-        const step = 100.0/separators;
+        const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
+        wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
+        ctx.strokeStyle = containerStrokeColor;
+        ctx.fillStyle = containerFillColorLight;
+        ctx.fill();
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.stroke();
+        ctx.globalCompositeOperation = "source-over";
 
-        for (let s = step; s < 100.0; s += step) {
-            const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
-            separatorPath(ctx, separatorArea);
+        const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
+        wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
+        ctx.strokeStyle = containerStrokeColor;
+        ctx.fillStyle = containerFillColorDark;
+        ctx.fill();
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.stroke();
+        ctx.globalCompositeOperation = "source-over";
+
+        if (separators > 1) {
+            const step = 100.0/separators;
+
+            for (let s = step; s < 100.0; s += step) {
+                const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
+                separatorPath(ctx, separatorArea);
+                ctx.globalCompositeOperation = "destination-out";
+                ctx.stroke();
+                ctx.globalCompositeOperation = "source-over";
+            }
+        }
+
+
+        if (value > 0) {
+            const fillHeight = size.h + (value / 100.0 * (rect.h - size.h));
+
+            const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
+            wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
+            ctx.strokeStyle = waterStrokeColor;
+            ctx.fillStyle = waterFillColorDark;
+            ctx.fill();
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.stroke();
+            ctx.globalCompositeOperation = "source-over";
+
+            const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
+            wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
+            ctx.strokeStyle = waterStrokeColor;
+            ctx.fillStyle = waterFillColorLight;
+            ctx.fill();
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.stroke();
+            ctx.globalCompositeOperation = "source-over";
+
+            const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
+            rhombusPath(ctx, fillTopRhombusArea);
+            ctx.strokeStyle = waterStrokeColor;
+            ctx.fillStyle = waterFillColor;
+            ctx.fill();
             ctx.globalCompositeOperation = "destination-out";
             ctx.stroke();
             ctx.globalCompositeOperation = "source-over";
         }
-    }
 
+        if (!drawTop) {
+            return;
+        }
 
-    if (value > 0) {
-        const fillHeight = size.h + (value / 100.0 * (rect.h - size.h));
-
-        const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
-        wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
-        ctx.strokeStyle = waterStrokeColor;
-        ctx.fillStyle = waterFillColorDark;
-        ctx.fill();
+        const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
+        wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
+        ctx.strokeStyle = containerStrokeColor;
         ctx.globalCompositeOperation = "destination-out";
         ctx.stroke();
         ctx.globalCompositeOperation = "source-over";
 
-        const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
-        wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
-        ctx.strokeStyle = waterStrokeColor;
-        ctx.fillStyle = waterFillColorLight;
-        ctx.fill();
+        const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
+        wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
+        ctx.strokeStyle = containerStrokeColor;
         ctx.globalCompositeOperation = "destination-out";
         ctx.stroke();
         ctx.globalCompositeOperation = "source-over";
 
-        const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
-        rhombusPath(ctx, fillTopRhombusArea);
-        ctx.strokeStyle = waterStrokeColor;
-        ctx.fillStyle = waterFillColor;
+        const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
+        rhombusPath(ctx, topRhombusArea);
+        ctx.strokeStyle = containerStrokeColor;
+        ctx.fillStyle = containerFillColor;
         ctx.fill();
         ctx.globalCompositeOperation = "destination-out";
         ctx.stroke();
         ctx.globalCompositeOperation = "source-over";
     }
-
-    if (!drawTop) {
-        return;
-    }
-
-    const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
-    wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
-    ctx.strokeStyle = containerStrokeColor;
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.stroke();
-    ctx.globalCompositeOperation = "source-over";
-
-    const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
-    wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
-    ctx.strokeStyle = containerStrokeColor;
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.stroke();
-    ctx.globalCompositeOperation = "source-over";
-
-    const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
-    rhombusPath(ctx, topRhombusArea);
-    ctx.strokeStyle = containerStrokeColor;
-    ctx.fillStyle = containerFillColor;
-    ctx.fill();
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.stroke();
-    ctx.globalCompositeOperation = "source-over";
 }
 
 function rhombusPath(ctx: CanvasRenderingContext2D, area: Area) {
