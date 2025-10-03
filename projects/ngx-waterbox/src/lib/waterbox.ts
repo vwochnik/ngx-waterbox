@@ -1,4 +1,4 @@
-import { Component, inject, ElementRef, DestroyRef, AfterViewInit, signal, input, viewChild, effect, computed } from '@angular/core';
+import { Component, inject, ElementRef, DestroyRef, OnInit, signal, input, viewChild, effect, computed } from '@angular/core';
 
 import { Theme } from './types';
 import { getDefaultTheme, getFromCssVariables } from './theme';
@@ -19,7 +19,7 @@ import { Renderer } from './renderer';
     }
   `
 })
-export class Waterbox implements AfterViewInit {
+export class Waterbox implements OnInit {
   destroyRef = inject(DestroyRef);
   el = inject(ElementRef);
   canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
@@ -59,7 +59,7 @@ export class Waterbox implements AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.theme.set(getFromCssVariables(this.el.nativeElement));
   }
 }
