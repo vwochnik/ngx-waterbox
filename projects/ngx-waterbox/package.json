@@ -1,6 +1,6 @@
 {
   "name": "ngx-waterbox",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "peerDependencies": {
     "@angular/common": "^20.3.0",
     "@angular/core": "^20.3.0"

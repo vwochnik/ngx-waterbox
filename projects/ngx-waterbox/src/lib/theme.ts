@@ -73,10 +73,10 @@ const THEME_PROPERTIES: ThemeProperty[] = [
         variable: "stroke-width"
     },
     {
-        key: "separators",
+        key: "divisions",
         type: "number",
         default: 5,
-        variable: "separators"
+        variable: "divisions"
     },
     {
         key: "separatorSize",

@@ -37,7 +37,7 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             containerFillColorDark,
             containerStrokeColor,
             strokeWidth,
-            separators,
+            divisions,
             separatorSize,
             clipEdges,
             drawTop
@@ -85,8 +85,8 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
         ctx.stroke();
         ctx.globalCompositeOperation = "source-over";
 
-        if (separators > 1) {
-            const step = 100.0/separators;
+        if (divisions > 1) {
+            const step = 100.0/divisions;
 
             for (let s = step; s < 100.0; s += step) {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
@@ -194,7 +194,7 @@ function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContex
 }
 
 function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: number): void {
-    const s = size / 100.0;
+    const s = size / 200.0;
     ctx.beginPath();
     ctx.moveTo(area.x+area.w/2-area.w*s, area.y+area.h*s);
     ctx.lineTo(area.x+area.w/2, area.y);

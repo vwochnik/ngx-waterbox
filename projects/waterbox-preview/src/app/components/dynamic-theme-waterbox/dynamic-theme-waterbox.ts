@@ -41,7 +41,7 @@ export class DynamicThemeWaterbox {
       waterFillColorDark: darken(water, contrast),
       waterStrokeColor: darken(water, 2*contrast),
       strokeWidth: 0.5,
-      separators: 5,
+      divisions: 5,
       separatorSize: 25,
       clipEdges: false,
       drawTop: false
