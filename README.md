@@ -77,7 +77,8 @@ theme: Theme = {
   "separators": 5,
   "clipEdges": false,
   "drawTop": false
-}```
+}
+```
 
 3. Pass theme to waterbox component:
 
