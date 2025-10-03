@@ -85,3 +85,7 @@ theme: Theme = {
 ```html
 <ngx-waterbox [value]="50" [theme]="theme"></ngx-waterbox>
 ```
+
+## License
+
+MIT
