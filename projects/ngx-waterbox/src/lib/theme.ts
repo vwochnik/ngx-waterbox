@@ -39,7 +39,7 @@ const THEME_PROPERTIES: ThemeProperty[] = [
     {
         key: "containerStrokeColor",
         type: "string",
-        default: "rgb(60,80,100)",
+        default: "rgb(30,40,50)",
         variable: "container-color"
     },
     {
@@ -63,7 +63,7 @@ const THEME_PROPERTIES: ThemeProperty[] = [
     {
         key: "waterStrokeColor",
         type: "string",
-        default: "rgba(0,40,80,0.7)",
+        default: "rgba(0,20,40,0.8)",
         variable: "water-color"
     },
     {
