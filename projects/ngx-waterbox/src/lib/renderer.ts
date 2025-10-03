@@ -44,6 +44,7 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             containerFillColorDark,
             containerStrokeColor,
             strokeWidth, separators,
+            clipEdges,
             drawTop
         } = theme;
 
@@ -62,7 +63,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             ctx.strokeStyle = containerStrokeColor;
             ctx.fillStyle = containerFillColor;
             ctx.fill();
-            ctx.globalCompositeOperation = "destination-out";
+            if (clipEdges) {
+                ctx.globalCompositeOperation = "destination-out";
+            }
             ctx.stroke();
             ctx.globalCompositeOperation = "source-over";
 
@@ -71,7 +74,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             ctx.strokeStyle = containerStrokeColor;
             ctx.fillStyle = containerFillColorLight;
             ctx.fill();
-            ctx.globalCompositeOperation = "destination-out";
+            if (clipEdges) {
+                ctx.globalCompositeOperation = "destination-out";
+            }
             ctx.stroke();
             ctx.globalCompositeOperation = "source-over";
 
@@ -80,7 +85,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             ctx.strokeStyle = containerStrokeColor;
             ctx.fillStyle = containerFillColorDark;
             ctx.fill();
-            ctx.globalCompositeOperation = "destination-out";
+            if (clipEdges) {
+                ctx.globalCompositeOperation = "destination-out";
+            }
             ctx.stroke();
             ctx.globalCompositeOperation = "source-over";
 
@@ -90,7 +97,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
                 for (let s = step; s < 100.0; s += step) {
                     const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
                     separatorPath(ctx, separatorArea);
-                    ctx.globalCompositeOperation = "destination-out";
+                    if (clipEdges) {
+                        ctx.globalCompositeOperation = "destination-out";
+                    }
                     ctx.stroke();
                     ctx.globalCompositeOperation = "source-over";
                 }
@@ -109,7 +118,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
                 ctx.strokeStyle = waterStrokeColor;
                 ctx.fillStyle = waterFillColorDark;
                 ctx.fill();
-                ctx.globalCompositeOperation = "destination-out";
+                if (clipEdges) {
+                    ctx.globalCompositeOperation = "destination-out";
+                }
                 ctx.stroke();
                 ctx.globalCompositeOperation = "source-over";
 
@@ -118,7 +129,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
                 ctx.strokeStyle = waterStrokeColor;
                 ctx.fillStyle = waterFillColorLight;
                 ctx.fill();
-                ctx.globalCompositeOperation = "destination-out";
+                if (clipEdges) {
+                    ctx.globalCompositeOperation = "destination-out";
+                }
                 ctx.stroke();
                 ctx.globalCompositeOperation = "source-over";
 
@@ -127,7 +140,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
                 ctx.strokeStyle = waterStrokeColor;
                 ctx.fillStyle = waterFillColor;
                 ctx.fill();
-                ctx.globalCompositeOperation = "destination-out";
+                if (clipEdges) {
+                    ctx.globalCompositeOperation = "destination-out";
+                }
                 ctx.stroke();
                 ctx.globalCompositeOperation = "source-over";
             });
@@ -144,14 +159,18 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
             wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
             ctx.strokeStyle = containerStrokeColor;
-            ctx.globalCompositeOperation = "destination-out";
+            if (clipEdges) {
+                ctx.globalCompositeOperation = "destination-out";
+            }
             ctx.stroke();
             ctx.globalCompositeOperation = "source-over";
 
             const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
             wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
             ctx.strokeStyle = containerStrokeColor;
-            ctx.globalCompositeOperation = "destination-out";
+            if (clipEdges) {
+                ctx.globalCompositeOperation = "destination-out";
+            }
             ctx.stroke();
             ctx.globalCompositeOperation = "source-over";
 
@@ -160,7 +179,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             ctx.strokeStyle = containerStrokeColor;
             ctx.fillStyle = containerFillColor;
             ctx.fill();
-            ctx.globalCompositeOperation = "destination-out";
+            if (clipEdges) {
+                ctx.globalCompositeOperation = "destination-out";
+            }
             ctx.stroke();
             ctx.globalCompositeOperation = "source-over";
         });

@@ -21,49 +21,49 @@ const THEME_PROPERTIES: ThemeProperty[] = [
     {
         key: "containerFillColor",
         type: "string",
-        default: "rgb(127,127,127)",
+        default: "rgb(100,130,160)",
         variable: "container-fill-color"
     },
     {
         key: "containerFillColorLight",
         type: "string",
-        default: "rgb(159,159,159)",
+        default: "rgb(140,170,200)",
         variable: "container-fill-color-light"
     },
     {
         key: "containerFillColorDark",
         type: "string",
-        default: "rgb(95,95,95)",
+        default: "rgb(70,100,130)",
         variable: "container-fill-color-dark"
     },
     {
         key: "containerStrokeColor",
         type: "string",
-        default: "rgb(32,32,32)",
+        default: "rgb(60,80,100)",
         variable: "container-color"
     },
     {
         key: "waterFillColor",
         type: "string",
-        default: "rgba(64,64,127,0.6)",
+        default: "rgba(10,60,120,0.7)",
         variable: "water-fill-color"
     },
     {
         key: "waterFillColorLight",
         type: "string",
-        default: "rgba(83, 83, 167, 0.6)",
+        default: "rgba(30,90,180,0.7)",
         variable: "water-fill-color-light"
     },
     {
         key: "waterFillColorDark",
         type: "string",
-        default: "rgba(25, 25, 77, 0.6)",
+        default: "rgba(0,40,80,0.7)",
         variable: "water-fill-color-dark"
     },
     {
         key: "waterStrokeColor",
         type: "string",
-        default: "rgba(39, 39, 96, 0.6)",
+        default: "rgba(0,40,80,0.7)",
         variable: "water-color"
     },
     {
@@ -77,6 +77,12 @@ const THEME_PROPERTIES: ThemeProperty[] = [
         type: "number",
         default: 5,
         variable: "separators"
+    },
+    {
+        key: "clipEdges",
+        type: "boolean",
+        default: false,
+        variable: "clip-edges"
     },
     {
         key: "drawTop",
