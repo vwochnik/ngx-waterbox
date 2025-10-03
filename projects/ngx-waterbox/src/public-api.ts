@@ -3,3 +3,4 @@
  */
 
 export * from './lib/waterbox';
+export * from './lib/types';

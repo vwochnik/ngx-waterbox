@@ -1,4 +1,4 @@
-import { Component, inject, ElementRef, DestroyRef, OnInit, signal, input, viewChild, effect, computed } from '@angular/core';
+import { Component, inject, ElementRef, DestroyRef, signal, input, viewChild, effect, computed } from '@angular/core';
 
 import { Theme } from './types';
 import { getDefaultTheme, getFromCssVariables } from './theme';
@@ -19,24 +19,24 @@ import { Renderer } from './renderer';
     }
   `
 })
-export class Waterbox implements OnInit {
-  destroyRef = inject(DestroyRef);
-  el = inject(ElementRef);
-  canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
+export class Waterbox {
+  private destroyRef = inject(DestroyRef);
+  private el = inject(ElementRef);
+  protected canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
   value = input.required<number>();
+  theme = input<Theme | null>(null);
 
-  width = signal<number>(0);
-  height = signal<number>(0);
+  protected _theme = signal<Theme>(getDefaultTheme());
+  protected width = signal<number>(0);
+  protected height = signal<number>(0);
 
-  renderer = computed(() => {
+  protected renderer = computed(() => {
       const width = this.width();
       const height = this.height();
       const canvas = this.canvas();
       return Renderer(canvas.nativeElement, width, height);
   })
-
-  theme = signal<Theme>(getDefaultTheme());
 
   constructor() {
     const observer = new ResizeObserver((entries) => {
@@ -52,14 +52,19 @@ export class Waterbox implements OnInit {
     observer.observe(this.el.nativeElement);
 
     effect(() => {
-      const value = this.value();
       const theme = this.theme();
+      if (theme !== null) {
+        this._theme.set(theme);
+      } else {
+        this._theme.set(getFromCssVariables(this.el.nativeElement));
+      }
+    });
+
+    effect(() => {
+      const value = this.value();
+      const theme = this._theme();
       const renderer = this.renderer();
       renderer(value, theme);
     });
-  }
-
-  ngOnInit(): void {
-    this.theme.set(getFromCssVariables(this.el.nativeElement));
   }
 }
