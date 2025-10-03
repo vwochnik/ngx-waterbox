@@ -1,5 +1,5 @@
 <div align="center">
-<h1># ngx-waterbox</h1>
+<h1>ngx-waterbox</h1>
 
 ![Waterbox](preview.png?raw=true "Waterbox")
 </div>
@@ -38,6 +38,17 @@ import { Waterbox } from 'ngx-waterbox';
 ```
 
 4. Customize the appearance using inputs or CSS variables as needed.
+
+# Adjusting size
+
+The canvas will adapt to the size of the component. Simply change it via CSS in your parent component:
+
+```css
+ngx-waterbox {
+  width: 50px;
+  height: 200px;
+}
+```
 
 # Themeing
 
