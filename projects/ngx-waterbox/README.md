@@ -33,7 +33,7 @@ import { Waterbox } from 'ngx-waterbox';
 <ngx-waterbox [value]="50"></ngx-waterbox>
 ```
 
-3. Customize the appearance using inputs or CSS variables as needed.
+4. Customize the appearance using inputs or CSS variables as needed.
 
 For more advanced usage and configuration, refer to the documentation or source code.
 
