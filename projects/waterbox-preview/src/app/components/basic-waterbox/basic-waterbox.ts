@@ -1,4 +1,4 @@
-import { Component, inject, signal, DestroyRef } from '@angular/core';
+import { Component, inject, input, signal, DestroyRef } from '@angular/core';
 
 import { Waterbox } from 'ngx-waterbox';
 
@@ -6,11 +6,15 @@ import { Waterbox } from 'ngx-waterbox';
   selector: 'app-basic-waterbox',
   imports: [Waterbox],
   templateUrl: './basic-waterbox.html',
-  styleUrl: './basic-waterbox.css'
+  styleUrl: './basic-waterbox.css',
+  host: {
+    '[class.alternative]': 'alternative()'
+  }
 })
 export class BasicWaterbox {
   destroyRef = inject(DestroyRef);
 
+  alternative = input<boolean>(false);
   value = signal<number>(0);
 
   constructor() {

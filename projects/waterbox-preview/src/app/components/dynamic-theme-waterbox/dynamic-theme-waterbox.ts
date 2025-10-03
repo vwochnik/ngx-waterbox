@@ -21,15 +21,15 @@ export class DynamicThemeWaterbox {
   constructor() {
     const interval = setInterval(() => {
       this.value.update(v => (v + 1) % 100);
-    }, 50);
+    }, 30);
 
     this.destroyRef.onDestroy(() => clearInterval(interval));
   }
 
   generateTheme(value: number): Theme {
-    const contrast = 15;
-    const container = `rgba(127, 127, 147, 1)`
-    const water = `hsla(${value/100*(90+30)}, 80%, 50%, .7)`;
+    const contrast = 20;
+    const container = `hsla(180, 30%, 60%, 1)`
+    const water = `hsla(${value/100*(90+30)}, 90%, 50%, .7)`;
 
     return {
       containerFillColor: color(container),
