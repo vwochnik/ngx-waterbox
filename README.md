@@ -1,59 +1,86 @@
-# NgxWaterbox
+# ngx-waterbox
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.3.
+An isometric water box component for Angular.
 
-## Development server
+## Installation
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Install the library via NPM:
 
 ```bash
-ng generate component component-name
+npm install --save ngx-waterbox
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Basic Usage
 
-```bash
-ng generate --help
+1. Import the component in your Angular application:
+
+```typescript
+import { Waterbox } from 'ngx-waterbox';
 ```
 
-## Building
+2. Import the waterbox component into your component where you want to use it:
 
-To build the project run:
-
-```bash
-ng build
+```typescript
+@Component({
+  // ...
+  imports: [Waterbox]
+})
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+3. Use the component in your template:
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```html
+<ngx-waterbox [value]="50"></ngx-waterbox>
 ```
 
-## Running end-to-end tests
+4. Customize the appearance using inputs or CSS variables as needed.
 
-For end-to-end (e2e) testing, run:
+# Themeing
 
-```bash
-ng e2e
+## Using CSS variables
+
+| CSS Variable                           | Default Value           |
+|-----------------------------------------|-------------------------|
+| `--waterbox-container-fill-color`       | `rgb(100,130,160)`      |
+| `--waterbox-container-fill-color-light` | `rgb(140,170,200)`      |
+| `--waterbox-container-fill-color-dark`  | `rgb(70,100,130)`       |
+| `--waterbox-container-stroke-color`            | `rgb(30,40,50)`         |
+| `--waterbox-water-fill-color`           | `rgba(10,60,120,0.7)`   |
+| `--waterbox-water-fill-color-light`     | `rgba(30,90,180,0.7)`   |
+| `--waterbox-water-fill-color-dark`      | `rgba(0,40,80,0.7)`     |
+| `--waterbox-water-stroke-color`                | `rgba(0,20,40,0.8)`     |
+| `--waterbox-stroke-width`               | `0.5`                   |
+| `--waterbox-separators`                 | `5`                     |
+| `--waterbox-clip-edges`                 | `false`                 |
+| `--waterbox-draw-top`                   | `false`                 |
+
+# Using TypeScript
+
+1. Import `Theme` with the component:
+
+```typescript
+import { Waterbox, Theme } from 'ngx-waterbox';
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+2. Define your theme
+```
+theme: Theme = {
+  "containerFillColor": "rgb(100,130,160)",
+  "containerFillColorLight": "rgb(140,170,200)",
+  "containerFillColorDark": "rgb(70,100,130)",
+  "containerStrokeColor": "rgb(30,40,50)",
+  "waterFillColor": "rgba(10,60,120,0.7)",
+  "waterFillColorLight": "rgba(30,90,180,0.7)",
+  "waterFillColorDark": "rgba(0,40,80,0.7)",
+  "waterStrokeColor": "rgba(0,20,40,0.8)",
+  "strokeWidth": 0.5,
+  "separators": 5,
+  "clipEdges": false,
+  "drawTop": false
+}```
 
-## Additional Resources
+3. Pass theme to waterbox component:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```html
+<ngx-waterbox [value]="50" [theme]="theme"></ngx-waterbox>
+```
