@@ -1,0 +1,4 @@
+:host {
+    --waterbox-stroke-width: 1;
+    --waterbox-clip-edges: true;
+}
