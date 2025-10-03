@@ -11,4 +11,5 @@
     --waterbox-stroke-width: 1;
     --waterbox-clip-edges: false;
     --waterbox-separators: 2;
+    --waterbox-separator-size: 50;
 }

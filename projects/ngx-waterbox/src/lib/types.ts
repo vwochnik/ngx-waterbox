@@ -9,6 +9,7 @@ export interface Theme {
     waterStrokeColor: string;
     strokeWidth: number;
     separators: number;
+    separatorSize: number;
     clipEdges: boolean;
     drawTop: boolean;
 }

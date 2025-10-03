@@ -79,6 +79,12 @@ const THEME_PROPERTIES: ThemeProperty[] = [
         variable: "separators"
     },
     {
+        key: "separatorSize",
+        type: "number",
+        default: 10,
+        variable: "separator-size"
+    },
+    {
         key: "clipEdges",
         type: "boolean",
         default: false,

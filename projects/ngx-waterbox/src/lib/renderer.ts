@@ -36,7 +36,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             containerFillColorLight,
             containerFillColorDark,
             containerStrokeColor,
-            strokeWidth, separators,
+            strokeWidth,
+            separators,
+            separatorSize,
             clipEdges,
             drawTop
         } = theme;
@@ -88,7 +90,7 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
 
             for (let s = step; s < 100.0; s += step) {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
-                separatorPath(ctx, separatorArea);
+                separatorPath(ctx, separatorArea, separatorSize);
                 if (clipEdges) {
                     ctx.globalCompositeOperation = "destination-out";
                 }
@@ -191,9 +193,10 @@ function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContex
     ctx.closePath();
 }
 
-function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area): void {
+function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: number): void {
+    const s = size / 100.0;
     ctx.beginPath();
-    ctx.moveTo(area.x+area.w/2-area.w/10, area.y+area.h/10);
+    ctx.moveTo(area.x+area.w/2-area.w*s, area.y+area.h*s);
     ctx.lineTo(area.x+area.w/2, area.y);
-    ctx.lineTo(area.x+area.w/2+area.w/10, area.y+area.h/10);
+    ctx.lineTo(area.x+area.w/2+area.w*s, area.y+area.h*s);
 }
