@@ -1,4 +1,8 @@
-# ngx-waterbox
+<div align="center">
+<h1># ngx-waterbox</h1>
+
+![Waterbox](preview.png?raw=true "Waterbox")
+</div>
 
 An isometric water box component for Angular.
 
