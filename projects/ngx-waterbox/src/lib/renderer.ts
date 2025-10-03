@@ -49,14 +49,14 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
 
         ctx.clearRect(0, 0, width, height);
 
-        ctx.lineWidth = strokeWidth;
-        ctx.lineCap = "round";
-
         const actualWidth = Math.min(width, height),
             rect: Area = { x: width/2 - actualWidth/2 + strokeWidth/2, y: strokeWidth/2, w: actualWidth - strokeWidth - 1, h: height - strokeWidth - 1 },
             size: Size = { w: rect.w, h: rect.w/2 };
 
         buffered((ctx) => {
+            ctx.lineWidth = strokeWidth;
+            ctx.lineCap = "round";
+
             const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
             rhombusPath(ctx, bottomRhombusArea);
             ctx.strokeStyle = containerStrokeColor;
@@ -101,6 +101,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             const fillHeight = size.h + (value / 100.0 * (rect.h - size.h));
 
             buffered((ctx) => {
+                ctx.lineWidth = strokeWidth;
+                ctx.lineCap = "round";
+
                 const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
                 wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
                 ctx.strokeStyle = waterStrokeColor;
@@ -135,6 +138,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
         }
 
         buffered((ctx) => {
+            ctx.lineWidth = strokeWidth;
+            ctx.lineCap = "round";
+
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
             wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
             ctx.strokeStyle = containerStrokeColor;
