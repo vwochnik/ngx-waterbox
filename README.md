@@ -66,6 +66,7 @@ ngx-waterbox {
 | `--waterbox-water-stroke-color`                | `rgba(0,20,40,0.8)`     |
 | `--waterbox-stroke-width`               | `0.5`                   |
 | `--waterbox-separators`                 | `5`                     |
+| `--waterbox-separator-size`             | `10`                     |
 | `--waterbox-clip-edges`                 | `false`                 |
 | `--waterbox-draw-top`                   | `false`                 |
 
@@ -90,6 +91,7 @@ theme: Theme = {
   "waterStrokeColor": "rgba(0,20,40,0.8)",
   "strokeWidth": 0.5,
   "separators": 5,
+  "separatorSize": 10,
   "clipEdges": false,
   "drawTop": false
 }
