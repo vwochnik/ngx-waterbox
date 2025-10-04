@@ -139,11 +139,13 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
 }
 
 function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area) {
+    ctx.translate(area.x, area.y);
+
     ctx.beginPath();
-    ctx.moveTo(area.x+area.w/2, area.y);
-    ctx.lineTo(area.x+area.w, area.y+area.h/2);
-    ctx.lineTo(area.x+area.w/2, area.y+area.h);
-    ctx.lineTo(area.x,area.y+area.h/2);
+    ctx.moveTo(area.w/2, 0);
+    ctx.lineTo(area.w, area.h/2);
+    ctx.lineTo(area.w/2, area.h);
+    ctx.lineTo(0, area.h/2);
     ctx.closePath();
 }
 
