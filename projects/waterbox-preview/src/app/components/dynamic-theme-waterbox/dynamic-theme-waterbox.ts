@@ -32,10 +32,14 @@ export class DynamicThemeWaterbox {
     const water = `hsla(${value/100*(90+30)}, 90%, 50%, .7)`;
 
     return {
-      containerFillColor: color(container),
-      containerFillColorLight: lighten(container, contrast),
-      containerFillColorDark: darken(container, contrast),
-      containerStrokeColor: darken(container, 2*contrast),
+      backFillColor: color(container),
+      backFillColorLight: lighten(container, contrast),
+      backFillColorDark: darken(container, contrast),
+      backStrokeColor: darken(container, 2*contrast),
+      frontFillColor: alpha(color(container), 0.2),
+      frontFillColorLight: alpha(lighten(container, contrast), 0.2),
+      frontFillColorDark: alpha(darken(container, contrast), 0.2),
+      frontStrokeColor: alpha(darken(container, 2*contrast), 0.2),
       waterFillColor: color(water),
       waterFillColorLight: lighten(water, contrast),
       waterFillColorDark: darken(water, contrast),
@@ -44,7 +48,7 @@ export class DynamicThemeWaterbox {
       divisions: 5,
       separatorSize: 25,
       clipEdges: false,
-      drawTop: false
+      drawFront: true
     };
   }
 }
@@ -69,3 +73,9 @@ export function darken(color: string, amount: number): string {
 	
     return col.darken(Math.round(amount * multiplier)).toString() || color;
 }
+
+export function alpha(color: string, alpha: number): string {
+	const col = new TinyColor(color);
+  return col.setAlpha(alpha).toString();
+}
+

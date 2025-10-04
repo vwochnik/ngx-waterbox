@@ -32,15 +32,19 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             waterFillColorLight,
             waterFillColorDark,
             waterStrokeColor,
-            containerFillColor,
-            containerFillColorLight,
-            containerFillColorDark,
-            containerStrokeColor,
+            backFillColor,
+            backFillColorLight,
+            backFillColorDark,
+            backStrokeColor,
+            frontFillColor,
+            frontFillColorLight,
+            frontFillColorDark,
+            frontStrokeColor,
             strokeWidth,
             divisions,
             separatorSize,
             clipEdges,
-            drawTop
+            drawFront
         } = theme;
 
         const actualWidth = Math.min(width, height),
@@ -54,15 +58,15 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
 
         const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
         rhombusPath(ctx, bottomRhombusArea);
-        paint(ctx, containerFillColor, containerStrokeColor, clipEdges);
+        paint(ctx, backFillColor, backStrokeColor, clipEdges);
 
         const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
         wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
-        paint(ctx, containerFillColorLight, containerStrokeColor, clipEdges);
+        paint(ctx, backFillColorLight, backStrokeColor, clipEdges);
 
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
         wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
-        paint(ctx, containerFillColorDark, containerStrokeColor, clipEdges);
+        paint(ctx, backFillColorDark, backStrokeColor, clipEdges);
 
         if (divisions > 1) {
             const step = 100.0/divisions;
@@ -70,7 +74,7 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             for (let s = step; s < 100.0; s += step) {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
                 separatorPath(ctx, separatorArea, separatorSize);
-                paint(ctx, null, containerStrokeColor, clipEdges);
+                paint(ctx, null, backStrokeColor, clipEdges);
             }
         }
 
@@ -90,18 +94,18 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             paint(ctx, waterFillColor, waterStrokeColor, clipEdges);
         }
 
-        if (drawTop) {
+        if (drawFront) {
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
             wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
-            paint(ctx, null, containerStrokeColor, clipEdges);
+            paint(ctx, frontFillColorDark, frontStrokeColor, clipEdges);
 
             const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
             wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
-            paint(ctx, null, containerStrokeColor, clipEdges);
+            paint(ctx, frontFillColorLight, frontStrokeColor, clipEdges);
 
             const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
             rhombusPath(ctx, topRhombusArea);
-            paint(ctx, containerFillColor, containerStrokeColor, clipEdges);
+            paint(ctx, frontFillColor, frontStrokeColor, clipEdges);
         }
 
         canvasCtx.clearRect(0, 0, width, height);

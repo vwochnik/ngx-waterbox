@@ -19,28 +19,52 @@ type ThemeProperty = ThemePropertyMap[keyof Theme];
 
 const THEME_PROPERTIES: ThemeProperty[] = [
     {
-        key: "containerFillColor",
+        key: "backFillColor",
         type: "string",
         default: "rgb(100,130,160)",
-        variable: "container-fill-color"
+        variable: "back-fill-color"
     },
     {
-        key: "containerFillColorLight",
+        key: "backFillColorLight",
         type: "string",
         default: "rgb(140,170,200)",
-        variable: "container-fill-color-light"
+        variable: "back-fill-color-light"
     },
     {
-        key: "containerFillColorDark",
+        key: "backFillColorDark",
         type: "string",
         default: "rgb(70,100,130)",
-        variable: "container-fill-color-dark"
+        variable: "back-fill-color-dark"
     },
     {
-        key: "containerStrokeColor",
+        key: "backStrokeColor",
         type: "string",
         default: "rgb(30,40,50)",
-        variable: "container-color"
+        variable: "back-stroke-color"
+    },
+    {
+        key: "frontFillColor",
+        type: "string",
+        default: "rgba(100,130,160,0.2)",
+        variable: "front-fill-color"
+    },
+    {
+        key: "frontFillColorLight",
+        type: "string",
+        default: "rgba(140,170,200,0.2)",
+        variable: "front-fill-color-light"
+    },
+    {
+        key: "frontFillColorDark",
+        type: "string",
+        default: "rgba(70,100,130,0.2)",
+        variable: "front-fill-color-dark"
+    },
+    {
+        key: "frontStrokeColor",
+        type: "string",
+        default: "rgba(30,40,50,0.2)",
+        variable: "front-stroke-color"
     },
     {
         key: "waterFillColor",
@@ -64,7 +88,7 @@ const THEME_PROPERTIES: ThemeProperty[] = [
         key: "waterStrokeColor",
         type: "string",
         default: "rgba(0,20,40,0.8)",
-        variable: "water-color"
+        variable: "water-stroke-color"
     },
     {
         key: "strokeWidth",
@@ -91,10 +115,10 @@ const THEME_PROPERTIES: ThemeProperty[] = [
         variable: "clip-edges"
     },
     {
-        key: "drawTop",
+        key: "drawFront",
         type: "boolean",
         default: false,
-        variable: "draw-top"
+        variable: "draw-front"
     }
 ];
 

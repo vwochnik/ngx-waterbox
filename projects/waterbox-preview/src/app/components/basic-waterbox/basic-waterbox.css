@@ -1,6 +1,7 @@
 :host {
     --waterbox-stroke-width: 1;
     --waterbox-clip-edges: true;
+    --waterbox-draw-front: true;
 }
 
 :host.alternative {
@@ -12,4 +13,5 @@
     --waterbox-clip-edges: false;
     --waterbox-divisions: 2;
     --waterbox-separator-size: 50;
+    --waterbox-draw-front: false;
 }

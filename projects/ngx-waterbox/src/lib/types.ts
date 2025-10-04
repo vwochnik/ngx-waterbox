@@ -1,8 +1,12 @@
 export interface Theme {
-    containerFillColor: string;
-    containerFillColorLight: string;
-    containerFillColorDark: string;
-    containerStrokeColor: string;
+    backFillColor: string;
+    backFillColorLight: string;
+    backFillColorDark: string;
+    backStrokeColor: string;
+    frontFillColor: string;
+    frontFillColorLight: string;
+    frontFillColorDark: string;
+    frontStrokeColor: string;
     waterFillColor: string;
     waterFillColorLight: string;
     waterFillColorDark: string;
@@ -11,5 +15,5 @@ export interface Theme {
     divisions: number;
     separatorSize: number;
     clipEdges: boolean;
-    drawTop: boolean;
+    drawFront: boolean;
 }
