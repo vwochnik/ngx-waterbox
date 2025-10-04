@@ -52,6 +52,7 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             size: Size = { w: rect.w, h: rect.w/2 };
 
         ctx.clearRect(0, 0, width, height);
+        ctx.save();
 
         ctx.lineWidth = strokeWidth;
         ctx.lineCap = "round";
@@ -59,14 +60,17 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
         const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
         rhombusPath(ctx, bottomRhombusArea);
         paint(ctx, backFillColor, backStrokeColor, clipEdges);
+        ctx.restore();
 
         const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
         wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
         paint(ctx, backFillColorLight, backStrokeColor, clipEdges);
+        ctx.restore();
 
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
         wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
         paint(ctx, backFillColorDark, backStrokeColor, clipEdges);
+        ctx.restore();
 
         if (divisions > 1) {
             const step = 100.0/divisions;
@@ -75,6 +79,7 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
                 separatorPath(ctx, separatorArea, separatorSize);
                 paint(ctx, null, backStrokeColor, clipEdges);
+                ctx.restore();
             }
         }
 
@@ -84,28 +89,34 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
             paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges);
+            ctx.restore();
 
             const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
             paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges);
+            ctx.restore();
 
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
             rhombusPath(ctx, fillTopRhombusArea);
             paint(ctx, waterFillColor, waterStrokeColor, clipEdges);
+            ctx.restore();
         }
 
         if (drawFront) {
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
             wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
             paint(ctx, frontFillColorDark, frontStrokeColor, clipEdges);
+            ctx.restore();
 
             const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
             wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
             paint(ctx, frontFillColorLight, frontStrokeColor, clipEdges);
+            ctx.restore();
 
             const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
             rhombusPath(ctx, topRhombusArea);
             paint(ctx, frontFillColor, frontStrokeColor, clipEdges);
+            ctx.restore();
         }
 
         canvasCtx.clearRect(0, 0, width, height);
@@ -123,9 +134,10 @@ function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
 }
 
 function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: Size, leftOffset: number, rightOffset: number): void {
-    const rect: Area = { x: area.x, y: area.y+size.h/2, w: area.w, h: area.h-size.h};
-
-    const { x, y, w, h } = rect;
+    const x = area.x,
+          y = area.y+size.h/2,
+          w = area.w,
+          h = area.h-size.h;
 
     ctx.save();
 const skewY = (w === 0) ? 0 : (rightOffset - leftOffset) / w;
@@ -143,10 +155,10 @@ const skewY = (w === 0) ? 0 : (rightOffset - leftOffset) / w;
   ctx.translate(0, leftOffset);
 
     ctx.beginPath();
-    ctx.moveTo(rect.x, rect.y);
-    ctx.lineTo(rect.x+rect.w, rect.y);
-    ctx.lineTo(rect.x+rect.w, rect.y+rect.h);
-    ctx.lineTo(rect.x, rect.y+rect.h);
+    ctx.moveTo(x, y);
+    ctx.lineTo(x+w, y);
+    ctx.lineTo(x+w, y+h);
+    ctx.lineTo(x, y+h);
     ctx.closePath();
     ctx.restore();
 }
