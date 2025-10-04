@@ -56,10 +56,14 @@ ngx-waterbox {
 
 | CSS Variable                           | Default Value           |
 |-----------------------------------------|-------------------------|
-| `--waterbox-container-fill-color`       | `rgb(100,130,160)`      |
-| `--waterbox-container-fill-color-light` | `rgb(140,170,200)`      |
-| `--waterbox-container-fill-color-dark`  | `rgb(70,100,130)`       |
-| `--waterbox-container-stroke-color`            | `rgb(30,40,50)`         |
+| `--waterbox-back-fill-color`       | `rgb(100,130,160)`      |
+| `--waterbox-back-fill-color-light` | `rgb(140,170,200)`      |
+| `--waterbox-back-fill-color-dark`  | `rgb(70,100,130)`       |
+| `--waterbox-back-stroke-color`            | `rgb(30,40,50)`         |
+| `--waterbox-front-fill-color`       | `rgba(100,130,160,0.2)`      |
+| `--waterbox-front-fill-color-light` | `rgba(140,170,200,0.2)`      |
+| `--waterbox-front-fill-color-dark`  | `rgba(70,100,130,0.2)`       |
+| `--waterbox-front-stroke-color`     | `rgba(30,40,50,0.2)`         |
 | `--waterbox-water-fill-color`           | `rgba(10,60,120,0.7)`   |
 | `--waterbox-water-fill-color-light`     | `rgba(30,90,180,0.7)`   |
 | `--waterbox-water-fill-color-dark`      | `rgba(0,40,80,0.7)`     |
@@ -68,7 +72,7 @@ ngx-waterbox {
 | `--waterbox-divisions`                 | `5`                     |
 | `--waterbox-separator-size`             | `10`                     |
 | `--waterbox-clip-edges`                 | `false`                 |
-| `--waterbox-draw-top`                   | `false`                 |
+| `--waterbox-draw-front`                   | `false`                 |
 
 # Using TypeScript
 
@@ -81,10 +85,14 @@ import { Waterbox, Theme } from 'ngx-waterbox';
 2. Define your theme
 ```
 theme: Theme = {
-  "containerFillColor": "rgb(100,130,160)",
-  "containerFillColorLight": "rgb(140,170,200)",
-  "containerFillColorDark": "rgb(70,100,130)",
-  "containerStrokeColor": "rgb(30,40,50)",
+  "backFillColor": "rgb(100,130,160)",
+  "backFillColorLight": "rgb(140,170,200)",
+  "backFillColorDark": "rgb(70,100,130)",
+  "backStrokeColor": "rgb(30,40,50)",
+  "frontFillColor": "rgba(100,130,160,0.2)",
+  "frontFillColorLight": "rgba(140,170,200,0.2)",
+  "frontFillColorDark": "rgba(70,100,130,0.2)",
+  "frontStrokeColor": "rgba(30,40,50,0.2)",
   "waterFillColor": "rgba(10,60,120,0.7)",
   "waterFillColorLight": "rgba(30,90,180,0.7)",
   "waterFillColorDark": "rgba(0,40,80,0.7)",
@@ -93,7 +101,7 @@ theme: Theme = {
   "divisions": 5,
   "separatorSize": 10,
   "clipEdges": false,
-  "drawTop": false
+  "drawFront": false
 }
 ```
 
