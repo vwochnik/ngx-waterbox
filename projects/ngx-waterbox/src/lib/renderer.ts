@@ -1,4 +1,6 @@
 import { Theme } from './types';
+import { createCoarseNoise } from './effects'
+
 
 interface Area {
     x: number,
@@ -25,6 +27,9 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
     if (!ctx) {
         throw new Error("can't get context");
     }
+
+    const noiseCanvas = createCoarseNoise(width, height, 1, 0.15);
+    const noisePattern = ctx.createPattern(noiseCanvas, 'repeat');
 
     return function(value: number, theme: Theme): void {
         const {
@@ -83,15 +88,15 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
 
             const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
-            paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges);
+            paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges, noisePattern);
 
             const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
-            paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges);
+            paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges, noisePattern);
 
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
             rhombusPath(ctx, fillTopRhombusArea);
-            paint(ctx, waterFillColor, waterStrokeColor, clipEdges);
+            paint(ctx, waterFillColor, waterStrokeColor, clipEdges, noisePattern);
         }
 
         if (drawFront) {
@@ -143,11 +148,17 @@ function paint(
     ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
     fillColor: string | null,
     strokeColor: string | null,
-    clipEdges: boolean
+    clipEdges: boolean,
+    pattern: CanvasPattern | null = null
 ): void {
+    ctx.save();
     if (fillColor !== null) {
         ctx.fillStyle = fillColor;
         ctx.fill();
+        if (pattern !== null) {
+            ctx.fillStyle = pattern;
+            ctx.fill();
+        }
     }
     if (strokeColor !== null) {
         if (clipEdges) {
@@ -155,6 +166,6 @@ function paint(
         }
         ctx.strokeStyle = strokeColor;
         ctx.stroke();
-        ctx.globalCompositeOperation = "source-over";
     }
+    ctx.restore();
 }
