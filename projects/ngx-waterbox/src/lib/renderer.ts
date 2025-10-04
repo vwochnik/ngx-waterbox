@@ -54,36 +54,15 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
 
         const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
         rhombusPath(ctx, bottomRhombusArea);
-        ctx.strokeStyle = containerStrokeColor;
-        ctx.fillStyle = containerFillColor;
-        ctx.fill();
-        if (clipEdges) {
-            ctx.globalCompositeOperation = "destination-out";
-        }
-        ctx.stroke();
-        ctx.globalCompositeOperation = "source-over";
+        paint(ctx, containerFillColor, containerStrokeColor, clipEdges);
 
         const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
         wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
-        ctx.strokeStyle = containerStrokeColor;
-        ctx.fillStyle = containerFillColorLight;
-        ctx.fill();
-        if (clipEdges) {
-            ctx.globalCompositeOperation = "destination-out";
-        }
-        ctx.stroke();
-        ctx.globalCompositeOperation = "source-over";
+        paint(ctx, containerFillColorLight, containerStrokeColor, clipEdges);
 
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
         wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
-        ctx.strokeStyle = containerStrokeColor;
-        ctx.fillStyle = containerFillColorDark;
-        ctx.fill();
-        if (clipEdges) {
-            ctx.globalCompositeOperation = "destination-out";
-        }
-        ctx.stroke();
-        ctx.globalCompositeOperation = "source-over";
+        paint(ctx, containerFillColorDark, containerStrokeColor, clipEdges);
 
         if (divisions > 1) {
             const step = 100.0/divisions;
@@ -91,11 +70,7 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             for (let s = step; s < 100.0; s += step) {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
                 separatorPath(ctx, separatorArea, separatorSize);
-                if (clipEdges) {
-                    ctx.globalCompositeOperation = "destination-out";
-                }
-                ctx.stroke();
-                ctx.globalCompositeOperation = "source-over";
+                paint(ctx, null, containerStrokeColor, clipEdges);
             }
         }
 
@@ -104,70 +79,29 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
 
             const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
-            ctx.strokeStyle = waterStrokeColor;
-            ctx.fillStyle = waterFillColorDark;
-            ctx.fill();
-            if (clipEdges) {
-                ctx.globalCompositeOperation = "destination-out";
-            }
-            ctx.stroke();
-            ctx.globalCompositeOperation = "source-over";
+            paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges);
 
             const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
-            ctx.strokeStyle = waterStrokeColor;
-            ctx.fillStyle = waterFillColorLight;
-            ctx.fill();
-            if (clipEdges) {
-                ctx.globalCompositeOperation = "destination-out";
-            }
-            ctx.stroke();
-            ctx.globalCompositeOperation = "source-over";
+            paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges);
 
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
             rhombusPath(ctx, fillTopRhombusArea);
-            ctx.strokeStyle = waterStrokeColor;
-            ctx.fillStyle = waterFillColor;
-            ctx.fill();
-            if (clipEdges) {
-                ctx.globalCompositeOperation = "destination-out";
-            }
-            ctx.stroke();
-            ctx.globalCompositeOperation = "source-over";
+            paint(ctx, waterFillColor, waterStrokeColor, clipEdges);
         }
 
         if (drawTop) {
-            ctx.lineWidth = strokeWidth;
-            ctx.lineCap = "round";
-
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
             wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
-            ctx.strokeStyle = containerStrokeColor;
-            if (clipEdges) {
-                ctx.globalCompositeOperation = "destination-out";
-            }
-            ctx.stroke();
-            ctx.globalCompositeOperation = "source-over";
+            paint(ctx, null, containerStrokeColor, clipEdges);
 
             const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
             wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
-            ctx.strokeStyle = containerStrokeColor;
-            if (clipEdges) {
-                ctx.globalCompositeOperation = "destination-out";
-            }
-            ctx.stroke();
-            ctx.globalCompositeOperation = "source-over";
+            paint(ctx, null, containerStrokeColor, clipEdges);
 
             const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
             rhombusPath(ctx, topRhombusArea);
-            ctx.strokeStyle = containerStrokeColor;
-            ctx.fillStyle = containerFillColor;
-            ctx.fill();
-            if (clipEdges) {
-                ctx.globalCompositeOperation = "destination-out";
-            }
-            ctx.stroke();
-            ctx.globalCompositeOperation = "source-over";
+            paint(ctx, containerFillColor, containerStrokeColor, clipEdges);
         }
 
         canvasCtx.clearRect(0, 0, width, height);
@@ -199,4 +133,24 @@ function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingC
     ctx.moveTo(area.x+area.w/2-area.w*s, area.y+area.h*s);
     ctx.lineTo(area.x+area.w/2, area.y);
     ctx.lineTo(area.x+area.w/2+area.w*s, area.y+area.h*s);
+}
+
+function paint(
+    ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+    fillColor: string | null,
+    strokeColor: string | null,
+    clipEdges: boolean
+): void {
+    if (fillColor !== null) {
+        ctx.fillStyle = fillColor;
+        ctx.fill();
+    }
+    if (strokeColor !== null) {
+        if (clipEdges) {
+            ctx.globalCompositeOperation = "destination-out";
+        }
+        ctx.strokeStyle = strokeColor;
+        ctx.stroke();
+        ctx.globalCompositeOperation = "source-over";
+    }
 }
