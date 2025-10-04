@@ -123,12 +123,32 @@ function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
 }
 
 function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: Size, leftOffset: number, rightOffset: number): void {
+    const rect: Area = { x: area.x, y: area.y+size.h/2, w: area.w, h: area.h-size.h};
+
+    const { x, y, w, h } = rect;
+
+    ctx.save();
+const skewY = (w === 0) ? 0 : (rightOffset - leftOffset) / w;
+
+  // move origin to topleft of the rect after applying the left offset
+  ctx.translate(x, y);
+  // apply vertical shear: newY = skewY * x + 1 * y
+  // transform(a,b,c,d,e,f) multiplies current transform by:
+  // [ a c e ]
+  // [ b d f ]
+  // where newX = a*x + c*y + e, newY = b*x + d*y + f
+  ctx.transform(1, skewY, 0, 1, 0, 0);
+
+  ctx.translate(-x, -y);
+  ctx.translate(0, leftOffset);
+
     ctx.beginPath();
-    ctx.moveTo(area.x, area.y+size.h/2+leftOffset);
-    ctx.lineTo(area.x+area.w, area.y+size.h/2+rightOffset);
-    ctx.lineTo(area.x+area.w, area.y+area.h-size.h/2+rightOffset);
-    ctx.lineTo(area.x, area.y+area.h-size.h/2+leftOffset);
+    ctx.moveTo(rect.x, rect.y);
+    ctx.lineTo(rect.x+rect.w, rect.y);
+    ctx.lineTo(rect.x+rect.w, rect.y+rect.h);
+    ctx.lineTo(rect.x, rect.y+rect.h);
     ctx.closePath();
+    ctx.restore();
 }
 
 function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: number): void {
