@@ -1,6 +1,5 @@
 import { Theme } from './types';
-import { createCoarseNoise } from './effects'
-
+import {createCoarseNoise } from './effects';
 
 interface Area {
     x: number,
@@ -28,8 +27,8 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
         throw new Error("can't get context");
     }
 
-    const noiseCanvas = createCoarseNoise(width, height, 1, 0.15);
-    const noisePattern = ctx.createPattern(noiseCanvas, 'repeat');
+    const noiseCanvas = createCoarseNoise(64, 64, 8, 0.5);
+    const noisePattern = ctx.createPattern(noiseCanvas, "repeat");
 
     return function(value: number, theme: Theme): void {
         const {
@@ -57,29 +56,38 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             size: Size = { w: rect.w, h: rect.w/2 };
 
         ctx.clearRect(0, 0, width, height);
+        ctx.save();
 
         ctx.lineWidth = strokeWidth;
         ctx.lineCap = "round";
 
         const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
+        ctx.save();
         rhombusPath(ctx, bottomRhombusArea);
         paint(ctx, backFillColor, backStrokeColor, clipEdges);
+        ctx.restore();
 
         const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
+        ctx.save();
         wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
         paint(ctx, backFillColorLight, backStrokeColor, clipEdges);
+        ctx.restore();
 
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
+        ctx.save();
         wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
         paint(ctx, backFillColorDark, backStrokeColor, clipEdges);
+        ctx.restore();
 
         if (divisions > 1) {
             const step = 100.0/divisions;
 
             for (let s = step; s < 100.0; s += step) {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
+                ctx.save();
                 separatorPath(ctx, separatorArea, separatorSize);
                 paint(ctx, null, backStrokeColor, clipEdges);
+                ctx.restore();
             }
         }
 
@@ -87,30 +95,42 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             const fillHeight = size.h + (value / 100.0 * (rect.h - size.h));
 
             const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
+            ctx.save();
             wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
             paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges, noisePattern);
+            ctx.restore();
 
             const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
+            ctx.save();
             wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
             paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges, noisePattern);
+            ctx.restore();
 
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
+            ctx.save();
             rhombusPath(ctx, fillTopRhombusArea);
             paint(ctx, waterFillColor, waterStrokeColor, clipEdges, noisePattern);
+            ctx.restore();
         }
 
         if (drawFront) {
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
+            ctx.save();
             wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
             paint(ctx, frontFillColorDark, frontStrokeColor, clipEdges);
+            ctx.restore();
 
             const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
+            ctx.save();
             wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
             paint(ctx, frontFillColorLight, frontStrokeColor, clipEdges);
+            ctx.restore();
 
             const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
+            ctx.save();
             rhombusPath(ctx, topRhombusArea);
             paint(ctx, frontFillColor, frontStrokeColor, clipEdges);
+            ctx.restore();
         }
 
         canvasCtx.clearRect(0, 0, width, height);
@@ -128,11 +148,21 @@ function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
 }
 
 function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: Size, leftOffset: number, rightOffset: number): void {
+    const x = area.x,
+          y = area.y+size.h/2,
+          w = area.w,
+          h = area.h-size.h;
+
+    const skewY = (w === 0) ? 0 : (rightOffset - leftOffset) / w;
+
+    ctx.translate(x, y + leftOffset);
+    ctx.transform(1, skewY, 0, 1, 0, 0);
+
     ctx.beginPath();
-    ctx.moveTo(area.x, area.y+size.h/2+leftOffset);
-    ctx.lineTo(area.x+area.w, area.y+size.h/2+rightOffset);
-    ctx.lineTo(area.x+area.w, area.y+area.h-size.h/2+rightOffset);
-    ctx.lineTo(area.x, area.y+area.h-size.h/2+leftOffset);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w, 0);
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
     ctx.closePath();
 }
 
@@ -151,7 +181,6 @@ function paint(
     clipEdges: boolean,
     pattern: CanvasPattern | null = null
 ): void {
-    ctx.save();
     if (fillColor !== null) {
         ctx.fillStyle = fillColor;
         ctx.fill();
@@ -166,6 +195,6 @@ function paint(
         }
         ctx.strokeStyle = strokeColor;
         ctx.stroke();
+        ctx.globalCompositeOperation = "source-over";
     }
-    ctx.restore();
 }
