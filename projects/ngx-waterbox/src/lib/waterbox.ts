@@ -35,10 +35,10 @@ export class Waterbox {
       const width = this.width();
       const height = this.height();
       if (width === 0 || height === 0) {
-        return () => {};
+          return null;
       }
       const canvas = this.canvas();
-      return Renderer(canvas.nativeElement, width, height);
+      return new Renderer(canvas.nativeElement, width, height);
   })
 
   constructor() {
@@ -71,7 +71,9 @@ export class Waterbox {
       const value = this.value();
       const theme = this._theme();
       const renderer = this.renderer();
-      renderer(value, theme);
+      if (renderer !== null) {
+        renderer.render(value, theme);
+      }
     });
   }
 }

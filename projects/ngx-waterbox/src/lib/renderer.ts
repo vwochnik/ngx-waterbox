@@ -13,24 +13,39 @@ interface Size {
     h: number
 }
 
-export function Renderer(canvas: HTMLCanvasElement, width: number, height: number) {
-    canvas.width = width;
-    canvas.height = height;
-    const canvasCtx = canvas.getContext("2d");
-    if (!canvasCtx) {
-        throw new Error("can't get context");
+export class Renderer {
+    private canvasContext: CanvasRenderingContext2D;
+    private noisePattern: CanvasPattern | null = null;
+    private offscreenCanvas: OffscreenCanvas;
+    private offscreenContext: OffscreenCanvasRenderingContext2D;
+
+    constructor(
+        private canvas: HTMLCanvasElement,
+        private width: number, 
+        private height: number
+    ) {
+        this.canvas.width = width;
+        this.canvas.height = height;
+
+        const canvasContext = canvas.getContext("2d");
+        if (!canvasContext) {
+            throw new Error("can't get context");
+        }
+        this.canvasContext = canvasContext;
+
+        this.offscreenCanvas = new OffscreenCanvas(width, height);
+        const offscreenContext = this.offscreenCanvas.getContext("2d");
+        if (!offscreenContext) {
+            throw new Error("can't get context");
+        }
+
+        this.offscreenContext = offscreenContext;
+
+        const noiseCanvas = createCoarseNoise(64, 64, 8, 0.5);
+        this.noisePattern = this.canvasContext.createPattern(noiseCanvas, "repeat");
     }
 
-    const offscreenCanvas = new OffscreenCanvas(width, height);
-    const ctx = offscreenCanvas.getContext("2d");
-    if (!ctx) {
-        throw new Error("can't get context");
-    }
-
-    const noiseCanvas = createCoarseNoise(64, 64, 8, 0.5);
-    const noisePattern = ctx.createPattern(noiseCanvas, "repeat");
-
-    return function(value: number, theme: Theme): void {
+    render(value: number, theme: Theme): void {
         const {
             waterFillColor,
             waterFillColorLight,
@@ -51,12 +66,15 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             drawFront
         } = theme;
 
+        const ctx = this.offscreenContext,
+              width = this.width,
+              height = this.height;
+
         const actualWidth = Math.min(width, height),
             rect: Area = { x: width/2 - actualWidth/2 + strokeWidth/2, y: strokeWidth/2, w: actualWidth - strokeWidth - 1, h: height - strokeWidth - 1 },
             size: Size = { w: rect.w, h: rect.w/2 };
 
         ctx.clearRect(0, 0, width, height);
-        ctx.save();
 
         ctx.lineWidth = strokeWidth;
         ctx.lineCap = "round";
@@ -97,19 +115,19 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             ctx.save();
             wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
-            paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges, noisePattern);
+            paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges, this.noisePattern);
             ctx.restore();
 
             const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             ctx.save();
             wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
-            paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges, noisePattern);
+            paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges, this.noisePattern);
             ctx.restore();
 
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
             ctx.save();
             rhombusPath(ctx, fillTopRhombusArea);
-            paint(ctx, waterFillColor, waterStrokeColor, clipEdges, noisePattern);
+            paint(ctx, waterFillColor, waterStrokeColor, clipEdges, this.noisePattern);
             ctx.restore();
         }
 
@@ -133,8 +151,8 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
             ctx.restore();
         }
 
-        canvasCtx.clearRect(0, 0, width, height);
-        canvasCtx.drawImage(offscreenCanvas, 0, 0);
+        this.canvasContext.clearRect(0, 0, width, height);
+        this.canvasContext.drawImage(this.offscreenCanvas, 0, 0);
     }
 }
 
