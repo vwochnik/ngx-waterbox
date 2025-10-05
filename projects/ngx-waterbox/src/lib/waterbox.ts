@@ -34,6 +34,9 @@ export class Waterbox {
   protected renderer = computed(() => {
       const width = this.width();
       const height = this.height();
+      if (width === 0 || height === 0) {
+        return () => {};
+      }
       const canvas = this.canvas();
       return Renderer(canvas.nativeElement, width, height);
   })
