@@ -1,4 +1,5 @@
 import { Theme } from './types';
+import { getDefaultTheme } from './theme';
 import {createCoarseNoise } from './effects';
 
 interface Area {
@@ -20,6 +21,8 @@ export class Renderer {
     private bufferContext: OffscreenCanvasRenderingContext2D;
     private tempCanvas: OffscreenCanvas;
     private tempContext: OffscreenCanvasRenderingContext2D;
+
+    private _theme: Theme = getDefaultTheme();
 
     constructor(
         private canvas: HTMLCanvasElement,
@@ -55,7 +58,15 @@ export class Renderer {
         this.noisePattern = this.canvasContext.createPattern(noiseCanvas, "repeat");
     }
 
-    render(value: number, theme: Theme): void {
+    get theme(): Theme {
+        return this._theme;
+    }
+
+    set theme(value: Theme) {
+        this._theme = value;
+    }
+
+    render(value: number): void {
         const {
             waterFillColor,
             waterFillColorLight,
@@ -74,7 +85,7 @@ export class Renderer {
             separatorSize,
             clipEdges,
             drawFront
-        } = theme;
+        } = this._theme;
 
         const width = this.width,
               height = this.height;

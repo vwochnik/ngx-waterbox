@@ -27,17 +27,16 @@ export class Waterbox {
   value = input.required<number>();
   theme = input<Theme | null>(null);
 
-  protected _theme = signal<Theme>(getDefaultTheme());
   protected width = signal<number>(0);
   protected height = signal<number>(0);
 
   protected renderer = computed(() => {
       const width = this.width();
       const height = this.height();
-      if (width === 0 || height === 0) {
-          return null;
-      }
       const canvas = this.canvas();
+      if (width <= 0 || height <= 0) {
+        return null;
+      }
       return new Renderer(canvas.nativeElement, width, height);
   })
 
@@ -59,20 +58,23 @@ export class Waterbox {
     observer.observe(this.el.nativeElement);
 
     effect(() => {
+      const renderer = this.renderer();
       const theme = this.theme();
-      if (theme !== null) {
-        this._theme.set(theme);
-      } else {
-        this._theme.set(getFromCssVariables(this.el.nativeElement));
+      if (renderer !== null) {
+        if (theme !== null) {
+          renderer.theme = theme;
+        } else {
+          renderer.theme = getFromCssVariables(this.el.nativeElement);
+        }
       }
     });
 
     effect(() => {
       const value = this.value();
-      const theme = this._theme();
       const renderer = this.renderer();
+      const _ = this.theme();
       if (renderer !== null) {
-        renderer.render(value, theme);
+        renderer.render(value);
       }
     });
   }
