@@ -100,17 +100,17 @@ export class Renderer {
         this.bufferContext.lineCap = "round";
 
         const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
-        this.paint(this.bufferContext, (ctx) => {
+        this.paint((ctx) => {
             rhombusPath(ctx, bottomRhombusArea);
         }, backFillColor, backStrokeColor, clipEdges);
 
         const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
-        this.paint(this.bufferContext, (ctx) => {
+        this.paint((ctx) => {
             wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
         }, backFillColorLight, backStrokeColor, clipEdges);
 
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
-        this.paint(this.bufferContext, (ctx) => {
+        this.paint((ctx) => {
             wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
         }, backFillColorDark, backStrokeColor, clipEdges);
 
@@ -119,7 +119,7 @@ export class Renderer {
 
             for (let s = step; s < 100.0; s += step) {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
-                this.paint(this.bufferContext, (ctx) => {
+                this.paint((ctx) => {
                     separatorPath(ctx, separatorArea, separatorSize);
                 }, null, backStrokeColor, clipEdges);
             }
@@ -129,34 +129,34 @@ export class Renderer {
             const fillHeight = size.h + (value / 100.0 * (rect.h - size.h));
 
             const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
-            this.paint(this.bufferContext, (ctx) => {
+            this.paint((ctx) => {
                 wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
             }, waterFillColorDark, waterStrokeColor, clipEdges, this.noisePattern);
 
             const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
-            this.paint(this.bufferContext, (ctx) => {
+            this.paint((ctx) => {
                 wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
             }, waterFillColorLight, waterStrokeColor, clipEdges, this.noisePattern);
 
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
-            this.paint(this.bufferContext, (ctx) => {
+            this.paint((ctx) => {
                 rhombusPath(ctx, fillTopRhombusArea);
             }, waterFillColor, waterStrokeColor, clipEdges, this.noisePattern);
         }
 
         if (drawFront) {
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
-            this.paint(this.bufferContext, (ctx) => {
+            this.paint((ctx) => {
                 wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
             }, frontFillColorDark, frontStrokeColor, clipEdges);
 
             const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
-            this.paint(this.bufferContext, (ctx) => {
+            this.paint((ctx) => {
                 wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
             }, frontFillColorLight, frontStrokeColor, clipEdges);
 
             const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
-            this.paint(this.bufferContext, (ctx) => {
+            this.paint((ctx) => {
                 rhombusPath(ctx, topRhombusArea);
             }, frontFillColor, frontStrokeColor, clipEdges);
         }
@@ -166,13 +166,13 @@ export class Renderer {
     }
 
     paint(
-        ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
         pathFunction: (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) => void,
         fillColor: string | null,
         strokeColor: string | null,
         clipEdges: boolean,
         pattern: CanvasPattern | null = null
     ): void {
+        const ctx = this.bufferContext;
         if (fillColor !== null) {
             if (pattern !== null) {
                 const tmp = this.tempContext;
