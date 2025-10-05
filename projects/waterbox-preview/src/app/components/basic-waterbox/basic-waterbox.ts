@@ -8,14 +8,14 @@ import { Waterbox } from 'ngx-waterbox';
   templateUrl: './basic-waterbox.html',
   styleUrl: './basic-waterbox.css',
   host: {
-    '[class.alternative]': 'alternative()'
+    '[class]': '`alternative-${alternative()}`'
   }
 })
 export class BasicWaterbox {
   destroyRef = inject(DestroyRef);
 
-  alternative = input<boolean>(false);
-  value = signal<number>(0);
+  alternative = input<number>(0);
+  value = signal<number>(Math.floor(100*Math.random()));
 
   constructor() {
     const interval = setInterval(() => {

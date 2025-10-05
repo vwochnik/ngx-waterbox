@@ -26,7 +26,7 @@ export function createCoarseNoise(width: number, height: number, cellSize: numbe
 }
 
 export function createDotMatrix(width: number, height: number, spacing: number, alpha: number): OffscreenCanvas {
-    const dotRadius = spacing * 0.2;
+    const dotRadius = spacing * 0.1;
 
   const off = new OffscreenCanvas(width, height);
   const ctx = off.getContext('2d');
