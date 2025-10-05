@@ -135,14 +135,15 @@ export function Renderer(canvas: HTMLCanvasElement, width: number, height: numbe
 }
 
 function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area) {
-    ctx.translate(area.x, area.y);
+    const a = Math.min(area.w, area.h),
+          b = Math.sqrt(2*a*a);;
+
+    ctx.translate(area.x+area.w/2, area.y+area.h/2);
+    ctx.scale(area.w/b, area.h/b);
+    ctx.rotate(Math.PI / 4);
 
     ctx.beginPath();
-    ctx.moveTo(area.w/2, 0);
-    ctx.lineTo(area.w, area.h/2);
-    ctx.lineTo(area.w/2, area.h);
-    ctx.lineTo(0, area.h/2);
-    ctx.closePath();
+    ctx.rect(-a/2, -a/2, a, a);
 }
 
 function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: Size, leftOffset: number, rightOffset: number): void {
@@ -157,11 +158,7 @@ function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContex
     ctx.transform(1, skewY, 0, 1, 0, 0);
 
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(w, 0);
-    ctx.lineTo(w, h);
-    ctx.lineTo(0, h);
-    ctx.closePath();
+    ctx.rect(0, 0, w, h);
 }
 
 function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: number): void {
