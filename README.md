@@ -82,7 +82,7 @@ ngx-waterbox {
 1. Import `Theme` with the component:
 
 ```typescript
-import { Waterbox, Theme } from 'ngx-waterbox';
+import { Waterbox, Theme, getFromPartial } from 'ngx-waterbox';
 ```
 
 2. Define your theme
@@ -121,6 +121,13 @@ theme: Theme = {
   "clipEdges": false,
   "drawFront": false
 }
+```
+
+You can also define a partial theme:
+```typescript
+theme = getFromPartial({
+  "drawFront": true
+});
 ```
 
 3. Pass theme to waterbox component:
