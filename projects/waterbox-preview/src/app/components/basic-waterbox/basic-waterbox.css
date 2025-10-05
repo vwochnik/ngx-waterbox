@@ -1,5 +1,5 @@
 :host {
-    --waterbox-stroke-width: 1.5;
+    --waterbox-stroke-width: 1;
     --waterbox-clip-edges: true;
     --waterbox-draw-front: true;
 }

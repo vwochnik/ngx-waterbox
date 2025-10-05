@@ -8,12 +8,11 @@ export function createCoarseNoise(width: number, height: number, cellSize: numbe
   const rows = Math.ceil(height / cellSize);
 
   ctx.save();
-  ctx.globalAlpha = alpha;
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      const value = Math.floor(Math.random() * 256);
-      ctx.fillStyle = `rgb(${value},${value},${value})`;
+      const value = Math.random();;
+      ctx.fillStyle = `rgba(255,255,255,${value})`;
       const px = x * cellSize;
       const py = y * cellSize;
       const w = Math.min(cellSize, width - px);

@@ -184,8 +184,10 @@ function paint(
         ctx.fillStyle = fillColor;
         ctx.fill();
         if (pattern !== null) {
+            ctx.globalCompositeOperation = "destination-out";
             ctx.fillStyle = pattern;
             ctx.fill();
+            ctx.globalCompositeOperation = "source-over";
         }
     }
     if (strokeColor !== null) {
