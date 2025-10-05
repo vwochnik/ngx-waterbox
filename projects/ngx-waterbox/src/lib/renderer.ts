@@ -16,8 +16,10 @@ interface Size {
 export class Renderer {
     private canvasContext: CanvasRenderingContext2D;
     private noisePattern: CanvasPattern | null = null;
-    private offscreenCanvas: OffscreenCanvas;
-    private offscreenContext: OffscreenCanvasRenderingContext2D;
+    private bufferCanvas: OffscreenCanvas;
+    private bufferContext: OffscreenCanvasRenderingContext2D;
+    private tempCanvas: OffscreenCanvas;
+    private tempContext: OffscreenCanvasRenderingContext2D;
 
     constructor(
         private canvas: HTMLCanvasElement,
@@ -33,13 +35,21 @@ export class Renderer {
         }
         this.canvasContext = canvasContext;
 
-        this.offscreenCanvas = new OffscreenCanvas(width, height);
-        const offscreenContext = this.offscreenCanvas.getContext("2d");
-        if (!offscreenContext) {
+        this.bufferCanvas = new OffscreenCanvas(width, height);
+        const bufferContext = this.bufferCanvas.getContext("2d");
+        if (!bufferContext) {
             throw new Error("can't get context");
         }
 
-        this.offscreenContext = offscreenContext;
+        this.bufferContext = bufferContext;
+
+        this.tempCanvas = new OffscreenCanvas(width, height);
+        const tempContext = this.tempCanvas.getContext("2d");
+        if (!tempContext) {
+            throw new Error("can't get context");
+        }
+
+        this.tempContext = tempContext;
 
         const noiseCanvas = createCoarseNoise(64, 64, 8, 0.5);
         this.noisePattern = this.canvasContext.createPattern(noiseCanvas, "repeat");
@@ -66,7 +76,7 @@ export class Renderer {
             drawFront
         } = theme;
 
-        const ctx = this.offscreenContext,
+        const ctx = this.bufferContext,
               width = this.width,
               height = this.height;
 
@@ -82,19 +92,19 @@ export class Renderer {
         const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
         ctx.save();
         rhombusPath(ctx, bottomRhombusArea);
-        paint(ctx, backFillColor, backStrokeColor, clipEdges);
+        this.paint(ctx, backFillColor, backStrokeColor, clipEdges);
         ctx.restore();
 
         const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
         ctx.save();
         wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
-        paint(ctx, backFillColorLight, backStrokeColor, clipEdges);
+        this.paint(ctx, backFillColorLight, backStrokeColor, clipEdges);
         ctx.restore();
 
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
         ctx.save();
         wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
-        paint(ctx, backFillColorDark, backStrokeColor, clipEdges);
+        this.paint(ctx, backFillColorDark, backStrokeColor, clipEdges);
         ctx.restore();
 
         if (divisions > 1) {
@@ -104,7 +114,7 @@ export class Renderer {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
                 ctx.save();
                 separatorPath(ctx, separatorArea, separatorSize);
-                paint(ctx, null, backStrokeColor, clipEdges);
+                this.paint(ctx, null, backStrokeColor, clipEdges);
                 ctx.restore();
             }
         }
@@ -115,19 +125,19 @@ export class Renderer {
             const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             ctx.save();
             wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
-            paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges, this.noisePattern);
+            this.paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges, this.noisePattern);
             ctx.restore();
 
             const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             ctx.save();
             wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
-            paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges, this.noisePattern);
+            this.paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges, this.noisePattern);
             ctx.restore();
 
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
             ctx.save();
             rhombusPath(ctx, fillTopRhombusArea);
-            paint(ctx, waterFillColor, waterStrokeColor, clipEdges, this.noisePattern);
+            this.paint(ctx, waterFillColor, waterStrokeColor, clipEdges, this.noisePattern);
             ctx.restore();
         }
 
@@ -135,24 +145,51 @@ export class Renderer {
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
             ctx.save();
             wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
-            paint(ctx, frontFillColorDark, frontStrokeColor, clipEdges);
+            this.paint(ctx, frontFillColorDark, frontStrokeColor, clipEdges);
             ctx.restore();
 
             const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
             ctx.save();
             wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
-            paint(ctx, frontFillColorLight, frontStrokeColor, clipEdges);
+            this.paint(ctx, frontFillColorLight, frontStrokeColor, clipEdges);
             ctx.restore();
 
             const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
             ctx.save();
             rhombusPath(ctx, topRhombusArea);
-            paint(ctx, frontFillColor, frontStrokeColor, clipEdges);
+            this.paint(ctx, frontFillColor, frontStrokeColor, clipEdges);
             ctx.restore();
         }
 
         this.canvasContext.clearRect(0, 0, width, height);
-        this.canvasContext.drawImage(this.offscreenCanvas, 0, 0);
+        this.canvasContext.drawImage(this.bufferCanvas, 0, 0);
+    }
+
+    paint(
+        ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+        fillColor: string | null,
+        strokeColor: string | null,
+        clipEdges: boolean,
+        pattern: CanvasPattern | null = null
+    ): void {
+        if (fillColor !== null) {
+            ctx.fillStyle = fillColor;
+            ctx.fill();
+            if (pattern !== null) {
+                ctx.globalCompositeOperation = "destination-out";
+                ctx.fillStyle = pattern;
+                ctx.fill();
+                ctx.globalCompositeOperation = "source-over";
+            }
+        }
+        if (strokeColor !== null) {
+            if (clipEdges) {
+                ctx.globalCompositeOperation = "destination-out";
+            }
+            ctx.strokeStyle = strokeColor;
+            ctx.stroke();
+            ctx.globalCompositeOperation = "source-over";
+        }
     }
 }
 
@@ -191,29 +228,3 @@ function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingC
     ctx.lineTo(area.x+area.w/2+area.w*s, area.y+area.h*s);
 }
 
-function paint(
-    ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-    fillColor: string | null,
-    strokeColor: string | null,
-    clipEdges: boolean,
-    pattern: CanvasPattern | null = null
-): void {
-    if (fillColor !== null) {
-        ctx.fillStyle = fillColor;
-        ctx.fill();
-        if (pattern !== null) {
-            ctx.globalCompositeOperation = "destination-out";
-            ctx.fillStyle = pattern;
-            ctx.fill();
-            ctx.globalCompositeOperation = "source-over";
-        }
-    }
-    if (strokeColor !== null) {
-        if (clipEdges) {
-            ctx.globalCompositeOperation = "destination-out";
-        }
-        ctx.strokeStyle = strokeColor;
-        ctx.stroke();
-        ctx.globalCompositeOperation = "source-over";
-    }
-}
