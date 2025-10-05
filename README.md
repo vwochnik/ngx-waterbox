@@ -2,6 +2,12 @@
 <h1>ngx-waterbox</h1>
 
 ![Waterbox](preview.png?raw=true "Waterbox")
+
+[![npm version](https://img.shields.io/npm/v/ngx-waterbox.svg)](https://www.npmjs.com/package/ngx-waterbox)
+[![npm downloads](https://img.shields.io/npm/dm/ngx-waterbox.svg)](https://www.npmjs.com/package/ngx-waterbox)
+[![license](https://img.shields.io/npm/l/ngx-waterbox.svg)](https://github.com/vwochnik/ngx-waterbox/blob/master/LICENSE.md)
+[![Bundle size](https://img.shields.io/bundlephobia/minzip/ngx-waterbox)](https://bundlephobia.com/package/ngx-waterbox)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue?logo=typescript)](https://www.typescriptlang.org/)
 </div>
 
 An isometric water box component for Angular.
