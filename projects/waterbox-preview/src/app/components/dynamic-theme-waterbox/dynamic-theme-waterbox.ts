@@ -1,7 +1,7 @@
 import { Component, inject, signal, DestroyRef, computed } from '@angular/core';
 import { TinyColor } from '@ctrl/tinycolor';
 
-import { Waterbox, Theme } from 'ngx-waterbox';
+import { Waterbox, Theme, getFromPartial } from 'ngx-waterbox';
 
 @Component({
   selector: 'app-dynamic-theme-waterbox',
@@ -31,25 +31,11 @@ export class DynamicThemeWaterbox {
     const container = `hsla(180, 30%, 60%, 1)`
     const water = `hsla(${value/100*(90+30)}, 90%, 50%, .7)`;
 
-    return {
+    return getFromPartial({
       backFillColor: color(container),
       backFillColorLight: lighten(container, contrast),
       backFillColorDark: darken(container, contrast),
       backStrokeColor: darken(container, 2*contrast),
-      backPattern: { 
-        name: "none",
-        size: 0,
-        alpha: 0
-      },
-      frontFillColor: alpha(color(container), 0.2),
-      frontFillColorLight: alpha(lighten(container, contrast), 0.2),
-      frontFillColorDark: alpha(darken(container, contrast), 0.2),
-      frontStrokeColor: alpha(darken(container, 2*contrast), 0.2),
-      frontPattern: {
-        name: "none",
-        size: 0,
-        alpha: 0
-      },
       waterFillColor: color(water),
       waterFillColorLight: lighten(water, contrast),
       waterFillColorDark: darken(water, contrast),
@@ -60,11 +46,8 @@ export class DynamicThemeWaterbox {
         alpha: 0.5
       },
       strokeWidth: 0.5,
-      divisions: 5,
-      separatorSize: 25,
-      clipEdges: false,
-      drawFront: true
-    };
+      divisions: 5
+    });
   }
 }
 

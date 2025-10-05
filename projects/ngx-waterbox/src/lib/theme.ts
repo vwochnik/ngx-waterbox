@@ -191,6 +191,13 @@ export function getFromCssVariables(element: HTMLElement): Theme {
         }, getDefaultTheme());
 }
 
+export function getFromPartial(partial: Partial<Theme>): Theme {
+    return {
+        ...getDefaultTheme(),
+        ...partial
+    };
+}
+
 function cssStringVariable(element: HTMLElement, v: string): string | null {
     const r = getComputedStyle(element).getPropertyValue(`--waterbox-${v}`);
     if (!r) return null;

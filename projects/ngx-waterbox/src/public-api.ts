@@ -4,3 +4,4 @@
 
 export * from './lib/waterbox';
 export * from './lib/types';
+export * from './lib/theme';
