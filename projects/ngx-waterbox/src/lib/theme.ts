@@ -1,4 +1,4 @@
-import { Theme } from "./types";
+import { Pattern, Theme } from "./types";
 
 type ThemePropertyMap = {
   [K in keyof Theme]: {
@@ -9,6 +9,8 @@ type ThemePropertyMap = {
       ? "number"
       : Theme[K] extends boolean
       ? "boolean"
+      : Theme[K] extends Pattern
+      ? "pattern"
       : never;
     default: Theme[K];
     variable: string;
@@ -44,8 +46,12 @@ const THEME_PROPERTIES: ThemeProperty[] = [
     },
     {
         key: "backPattern",
-        type: "string",
-        default: "none",
+        type: "pattern",
+        default: {
+            name: 'none',
+            size: 0,
+            alpha: 0.5
+        },
         variable: "back-pattern"
     },
     {
@@ -74,8 +80,12 @@ const THEME_PROPERTIES: ThemeProperty[] = [
     },
     {
         key: "frontPattern",
-        type: "string",
-        default: "none",
+        type: "pattern",
+        default: {
+            name: 'none',
+            size: 0,
+            alpha: 0.5
+        },
         variable: "front-stroke-color"
     },
     {
@@ -104,8 +114,12 @@ const THEME_PROPERTIES: ThemeProperty[] = [
     },
     {
         key: "waterPattern",
-        type: "string",
-        default: "none",
+        type: "pattern",
+        default: {
+            name: 'none',
+            size: 0,
+            alpha: 0.5
+        },
         variable: "water-pattern"
     },
     {
@@ -152,7 +166,7 @@ export function getDefaultTheme(): Theme {
 export function getFromCssVariables(element: HTMLElement): Theme {
     return THEME_PROPERTIES
         .reduce((theme, property) => {
-            let value: string | number | boolean | null = null;
+            let value: string | number | boolean | Pattern | null = null;
             switch (property.type) {
             case 'boolean':
                 value = cssBooleanVariable(element, property.variable);
@@ -162,6 +176,9 @@ export function getFromCssVariables(element: HTMLElement): Theme {
                 break;
             case 'number':
                 value = cssNumericVariable(element, property.variable);
+                break;
+            case 'pattern':
+                value = cssPatternVariable(element, property.variable);
                 break;
             }
             if (value !== null) {
@@ -195,4 +212,24 @@ function cssNumericVariable(element: HTMLElement, v: string): number | null {
     const n = parseFloat(r);
     if (isNaN(n)) { return null; }
     return n;
+}
+
+function cssPatternVariable(element: HTMLElement, v: string): Pattern | null {
+    const r = cssStringVariable(element, v);
+    if (r === null) return null;
+
+    const parts = r.split(' ');
+    if (parts.length > 3) {
+        return null;
+    }
+
+    const name = parts[0];
+
+    let size = parseFloat(parts[1] || '0');
+    if (isNaN(size)) { size = 0; }
+
+    let alpha = parseFloat(parts[2] || '0.0');
+    if (isNaN(alpha)) { alpha = 0.0; }
+
+    return { name, size, alpha };
 }

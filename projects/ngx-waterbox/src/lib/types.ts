@@ -3,20 +3,26 @@ export interface Theme {
     backFillColorLight: string;
     backFillColorDark: string;
     backStrokeColor: string;
-    backPattern: string;
+    backPattern: Pattern;
     frontFillColor: string;
     frontFillColorLight: string;
     frontFillColorDark: string;
     frontStrokeColor: string;
-    frontPattern: string;
+    frontPattern: Pattern;
     waterFillColor: string;
     waterFillColorLight: string;
     waterFillColorDark: string;
     waterStrokeColor: string;
-    waterPattern: string;
+    waterPattern: Pattern;
     strokeWidth: number;
     divisions: number;
     separatorSize: number;
     clipEdges: boolean;
     drawFront: boolean;
+}
+
+export interface Pattern {
+    name: string;
+    size: number;
+    alpha: number;
 }
