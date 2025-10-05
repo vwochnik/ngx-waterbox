@@ -1,4 +1,8 @@
-import {createCoarseNoise, createDotMatrix } from './utils';
+import {
+    createCoarseNoise,
+    createDotMatrix,
+    createGrid
+} from './utils';
 
 export function makePattern(
     ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
@@ -30,6 +34,13 @@ export function makePattern(
             throw new Error("failed to create pattern");
         }
         return dottedPattern;
+    case "grid":
+        const gridCanvas = createGrid(width, height, width * 0.1, 0.5);
+        const gridPattern = ctx.createPattern(gridCanvas, "repeat");
+        if (!gridPattern) {
+            throw new Error("failed to create pattern");
+        }
+        return gridPattern;
     default:
         throw new Error(`unknown pattern name: ${name}`);
     }

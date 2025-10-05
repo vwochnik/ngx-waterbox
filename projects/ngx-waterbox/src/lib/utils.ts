@@ -57,3 +57,35 @@ export function createDotMatrix(width: number, height: number, spacing: number, 
   return off;
 }
 
+export function createGrid(width: number, height: number, cellSize: number, alpha: number): OffscreenCanvas {
+  const off = new OffscreenCanvas(width, height);
+  const ctx = off.getContext('2d');
+  if (!ctx) {
+    throw new Error('Failed to get 2D context');
+  }
+  ctx.save();
+
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = cellSize * 0.1;
+  ctx.globalAlpha = alpha;
+
+  for (let x = 0; x <= width; x += cellSize) {
+    ctx.beginPath();
+    ctx.moveTo(x + 0.5, 0);
+    ctx.lineTo(x + 0.5, height);
+    ctx.stroke();
+  }
+
+  // Horizontal lines
+  for (let y = 0; y <= height; y += cellSize) {
+    ctx.beginPath();
+    ctx.moveTo(0, y + 0.5);
+    ctx.lineTo(width, y + 0.5);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+  return off;
+}
+
+
