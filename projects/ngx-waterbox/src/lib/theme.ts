@@ -43,6 +43,12 @@ const THEME_PROPERTIES: ThemeProperty[] = [
         variable: "back-stroke-color"
     },
     {
+        key: "backPattern",
+        type: "string",
+        default: "none",
+        variable: "back-pattern"
+    },
+    {
         key: "frontFillColor",
         type: "string",
         default: "rgba(100,130,160,0.2)",
@@ -64,6 +70,12 @@ const THEME_PROPERTIES: ThemeProperty[] = [
         key: "frontStrokeColor",
         type: "string",
         default: "rgba(30,40,50,0.2)",
+        variable: "front-stroke-color"
+    },
+    {
+        key: "frontPattern",
+        type: "string",
+        default: "none",
         variable: "front-stroke-color"
     },
     {
@@ -89,6 +101,12 @@ const THEME_PROPERTIES: ThemeProperty[] = [
         type: "string",
         default: "rgba(0,20,40,0.8)",
         variable: "water-stroke-color"
+    },
+    {
+        key: "waterPattern",
+        type: "string",
+        default: "none",
+        variable: "water-pattern"
     },
     {
         key: "strokeWidth",

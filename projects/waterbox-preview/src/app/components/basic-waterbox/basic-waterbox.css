@@ -2,6 +2,8 @@
     --waterbox-stroke-width: 1;
     --waterbox-clip-edges: true;
     --waterbox-draw-front: true;
+    --waterbox-back-pattern: dotted;
+    --waterbox-water-pattern: noise;
 }
 
 :host.alternative {
