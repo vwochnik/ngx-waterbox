@@ -1,6 +1,6 @@
 import { Theme } from './types';
 import { getDefaultTheme } from './theme';
-import { makePattern } from './patterns';
+import { CachedPattern } from './cached-pattern';
 
 interface Area {
     x: number,
@@ -23,13 +23,9 @@ export class Renderer {
 
     private _theme: Theme = getDefaultTheme();
 
-    private backPattern: CanvasPattern | string = "transparent";
-    private frontPattern: CanvasPattern | string = "transparent";
-    private waterPattern: CanvasPattern | string = "transparent";
-
-    private lastBackPattern: string = "transparent";
-    private lastFrontPattern: string = "transparent";
-    private lastWaterPattern: string = "transparent";
+    private cachedBackPattern: CachedPattern;
+    private cachedFrontPattern: CachedPattern;
+    private cachedWaterPattern: CachedPattern;
 
     constructor(
         private canvas: HTMLCanvasElement,
@@ -60,6 +56,10 @@ export class Renderer {
         }
 
         this.tempContext = tempContext;
+
+        this.cachedBackPattern = new CachedPattern(this.bufferContext, width, height);
+        this.cachedFrontPattern = new CachedPattern(this.bufferContext, width, height);
+        this.cachedWaterPattern = new CachedPattern(this.bufferContext, width, height);
     }
 
     get theme(): Theme {
@@ -68,18 +68,6 @@ export class Renderer {
 
     set theme(value: Theme) {
         this._theme = value;
-        if (this.lastBackPattern !== value.backPattern) {
-            this.backPattern = makePattern(this.bufferContext, value.backPattern, this.width, this.height);
-            this.lastBackPattern = value.backPattern;
-        }
-        if (this.lastFrontPattern !== value.frontPattern) {
-            this.frontPattern = makePattern(this.bufferContext, value.frontPattern, this.width, this.height);
-            this.lastFrontPattern = value.frontPattern;
-        }
-        if (this.lastWaterPattern !== value.waterPattern) {
-            this.waterPattern = makePattern(this.bufferContext, value.waterPattern, this.width, this.height);
-            this.lastWaterPattern = value.waterPattern;
-        }
     }
 
     render(value: number): void {
@@ -110,6 +98,10 @@ export class Renderer {
             rect: Area = { x: width/2 - actualWidth/2 + strokeWidth/2, y: strokeWidth/2, w: actualWidth - strokeWidth - 1, h: height - strokeWidth - 1 },
             size: Size = { w: rect.w, h: rect.w/2 };
 
+        const backPattern = this.cachedBackPattern.getPattern(this._theme.backPattern);
+        const frontPattern = this.cachedFrontPattern.getPattern(this._theme.frontPattern);
+        const waterPattern = this.cachedWaterPattern.getPattern(this._theme.waterPattern);
+
         this.bufferContext.clearRect(0, 0, width, height);
 
         this.bufferContext.lineWidth = strokeWidth;
@@ -118,17 +110,17 @@ export class Renderer {
         const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
         this.paint((ctx) => {
             rhombusPath(ctx, bottomRhombusArea);
-        }, backFillColor, backStrokeColor, clipEdges, this.backPattern);
+        }, backFillColor, backStrokeColor, clipEdges, backPattern);
 
         const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
         this.paint((ctx) => {
             wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
-        }, backFillColorLight, backStrokeColor, clipEdges, this.backPattern);
+        }, backFillColorLight, backStrokeColor, clipEdges, backPattern);
 
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
         this.paint((ctx) => {
             wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
-        }, backFillColorDark, backStrokeColor, clipEdges, this.backPattern);
+        }, backFillColorDark, backStrokeColor, clipEdges, backPattern);
 
         if (divisions > 1) {
             const step = 100.0/divisions;
@@ -137,7 +129,7 @@ export class Renderer {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
                 this.paint((ctx) => {
                     separatorPath(ctx, separatorArea, separatorSize);
-                }, null, backStrokeColor, clipEdges, this.backPattern);
+                }, null, backStrokeColor, clipEdges, backPattern);
             }
         }
 
@@ -147,34 +139,34 @@ export class Renderer {
             const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             this.paint((ctx) => {
                 wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
-            }, waterFillColorDark, waterStrokeColor, clipEdges, this.waterPattern);
+            }, waterFillColorDark, waterStrokeColor, clipEdges, waterPattern);
 
             const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
             this.paint((ctx) => {
                 wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
-            }, waterFillColorLight, waterStrokeColor, clipEdges, this.waterPattern);
+            }, waterFillColorLight, waterStrokeColor, clipEdges, waterPattern);
 
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
             this.paint((ctx) => {
                 rhombusPath(ctx, fillTopRhombusArea);
-            }, waterFillColor, waterStrokeColor, clipEdges, this.waterPattern);
+            }, waterFillColor, waterStrokeColor, clipEdges, waterPattern);
         }
 
         if (drawFront) {
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
             this.paint((ctx) => {
                 wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
-            }, frontFillColorDark, frontStrokeColor, clipEdges, this.frontPattern);
+            }, frontFillColorDark, frontStrokeColor, clipEdges, frontPattern);
 
             const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
             this.paint((ctx) => {
                 wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
-            }, frontFillColorLight, frontStrokeColor, clipEdges, this.frontPattern);
+            }, frontFillColorLight, frontStrokeColor, clipEdges, frontPattern);
 
             const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
             this.paint((ctx) => {
                 rhombusPath(ctx, topRhombusArea);
-            }, frontFillColor, frontStrokeColor, clipEdges, this.frontPattern);
+            }, frontFillColor, frontStrokeColor, clipEdges, frontPattern);
         }
 
         this.canvasContext.clearRect(0, 0, width, height);

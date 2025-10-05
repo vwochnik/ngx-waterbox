@@ -36,17 +36,29 @@ export class DynamicThemeWaterbox {
       backFillColorLight: lighten(container, contrast),
       backFillColorDark: darken(container, contrast),
       backStrokeColor: darken(container, 2*contrast),
-      backPattern: "none",
+      backPattern: { 
+        name: "none",
+        size: 0,
+        alpha: 0
+      },
       frontFillColor: alpha(color(container), 0.2),
       frontFillColorLight: alpha(lighten(container, contrast), 0.2),
       frontFillColorDark: alpha(darken(container, contrast), 0.2),
       frontStrokeColor: alpha(darken(container, 2*contrast), 0.2),
-      frontPattern: "none",
+      frontPattern: {
+        name: "none",
+        size: 0,
+        alpha: 0
+      },
       waterFillColor: color(water),
       waterFillColorLight: lighten(water, contrast),
       waterFillColorDark: darken(water, contrast),
       waterStrokeColor: darken(water, 2*contrast),
-      waterPattern: "blocky",
+      waterPattern: {
+        name: "blocky",
+        size: 50,
+        alpha: 0.1
+      },
       strokeWidth: 0.5,
       divisions: 5,
       separatorSize: 25,

@@ -8,7 +8,9 @@ export function makePattern(
     ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
     name: string,
     width: number,
-    height: number
+    height: number,
+    size: number,
+    alpha: number
 ): CanvasPattern | string {
     switch (name) {
     case "none":
