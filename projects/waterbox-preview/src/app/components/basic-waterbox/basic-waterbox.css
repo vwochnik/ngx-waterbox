@@ -3,7 +3,7 @@
     --waterbox-clip-edges: true;
     --waterbox-draw-front: true;
     --waterbox-back-pattern: grid;
-    --waterbox-water-pattern: blocky;
+    --waterbox-water-pattern: blocky 0 0.8;
 }
 
 :host.alternative-1 {

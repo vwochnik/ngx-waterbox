@@ -11,7 +11,7 @@ export function createCoarseNoise(width: number, height: number, cellSize: numbe
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      const value = Math.random();;
+      const value = Math.random() * alpha;
       ctx.fillStyle = `rgba(255,255,255,${value})`;
       const px = x * cellSize;
       const py = y * cellSize;
