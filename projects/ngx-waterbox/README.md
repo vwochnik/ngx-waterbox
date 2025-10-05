@@ -37,6 +37,6 @@ import { Waterbox } from 'ngx-waterbox';
 
 For more advanced usage and configuration, refer to the documentation or source code.
 
-## License
+# License
 
 MIT

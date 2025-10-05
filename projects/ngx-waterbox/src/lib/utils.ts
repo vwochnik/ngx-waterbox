@@ -66,7 +66,7 @@ export function createGrid(width: number, height: number, cellSize: number, alph
   ctx.save();
 
   ctx.strokeStyle = 'white';
-  ctx.lineWidth = cellSize * 0.1;
+  ctx.lineWidth = cellSize * 0.05;
   ctx.globalAlpha = alpha;
 
   for (let x = 0; x <= width; x += cellSize) {
