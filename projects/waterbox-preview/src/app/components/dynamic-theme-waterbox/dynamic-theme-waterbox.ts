@@ -6,8 +6,12 @@ import { Waterbox, Theme, getFromPartial } from 'ngx-waterbox';
 @Component({
   selector: 'app-dynamic-theme-waterbox',
   imports: [Waterbox],
-  templateUrl: './dynamic-theme-waterbox.html',
-  styleUrl: './dynamic-theme-waterbox.css'
+  template: `
+    <ngx-waterbox
+        [value]="value()"
+        [theme]="theme()"
+    />
+  `
 })
 export class DynamicThemeWaterbox {
   destroyRef = inject(DestroyRef);
