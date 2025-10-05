@@ -12,6 +12,10 @@
 
 An isometric water box component for Angular.
 
+## Demo
+
+See a live demo on StackBlitz: https://stackblitz.com/edit/ngx-waterbox-demo
+
 ## Installation
 
 Install the library via NPM:
