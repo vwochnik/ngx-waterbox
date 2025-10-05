@@ -76,46 +76,41 @@ export class Renderer {
             drawFront
         } = theme;
 
-        const ctx = this.bufferContext,
-              width = this.width,
+        const width = this.width,
               height = this.height;
 
         const actualWidth = Math.min(width, height),
             rect: Area = { x: width/2 - actualWidth/2 + strokeWidth/2, y: strokeWidth/2, w: actualWidth - strokeWidth - 1, h: height - strokeWidth - 1 },
             size: Size = { w: rect.w, h: rect.w/2 };
 
-        ctx.clearRect(0, 0, width, height);
+        this.bufferContext.clearRect(0, 0, width, height);
 
-        ctx.lineWidth = strokeWidth;
-        ctx.lineCap = "round";
+        this.bufferContext.lineWidth = strokeWidth;
+        this.bufferContext.lineCap = "round";
 
         const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
-        ctx.save();
-        rhombusPath(ctx, bottomRhombusArea);
-        this.paint(ctx, backFillColor, backStrokeColor, clipEdges);
-        ctx.restore();
+        this.paint(this.bufferContext, (ctx) => {
+            rhombusPath(ctx, bottomRhombusArea);
+        }, backFillColor, backStrokeColor, clipEdges);
 
         const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
-        ctx.save();
-        wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
-        this.paint(ctx, backFillColorLight, backStrokeColor, clipEdges);
-        ctx.restore();
+        this.paint(this.bufferContext, (ctx) => {
+            wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
+        }, backFillColorLight, backStrokeColor, clipEdges);
 
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
-        ctx.save();
-        wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
-        this.paint(ctx, backFillColorDark, backStrokeColor, clipEdges);
-        ctx.restore();
+        this.paint(this.bufferContext, (ctx) => {
+            wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
+        }, backFillColorDark, backStrokeColor, clipEdges);
 
         if (divisions > 1) {
             const step = 100.0/divisions;
 
             for (let s = step; s < 100.0; s += step) {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
-                ctx.save();
-                separatorPath(ctx, separatorArea, separatorSize);
-                this.paint(ctx, null, backStrokeColor, clipEdges);
-                ctx.restore();
+                this.paint(this.bufferContext, (ctx) => {
+                    separatorPath(ctx, separatorArea, separatorSize);
+                }, null, backStrokeColor, clipEdges);
             }
         }
 
@@ -123,42 +118,36 @@ export class Renderer {
             const fillHeight = size.h + (value / 100.0 * (rect.h - size.h));
 
             const leftFillWallArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
-            ctx.save();
-            wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
-            this.paint(ctx, waterFillColorDark, waterStrokeColor, clipEdges, this.noisePattern);
-            ctx.restore();
+            this.paint(this.bufferContext, (ctx) => {
+                wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
+            }, waterFillColorDark, waterStrokeColor, clipEdges, this.noisePattern);
 
             const rightFillWallArea: Area = { x: rect.x+rect.w/2, y: rect.y + rect.h - fillHeight, w: size.w/2, h: fillHeight };
-            ctx.save();
-            wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
-            this.paint(ctx, waterFillColorLight, waterStrokeColor, clipEdges, this.noisePattern);
-            ctx.restore();
+            this.paint(this.bufferContext, (ctx) => {
+                wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
+            }, waterFillColorLight, waterStrokeColor, clipEdges, this.noisePattern);
 
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
-            ctx.save();
-            rhombusPath(ctx, fillTopRhombusArea);
-            this.paint(ctx, waterFillColor, waterStrokeColor, clipEdges, this.noisePattern);
-            ctx.restore();
+            this.paint(this.bufferContext, (ctx) => {
+                rhombusPath(ctx, fillTopRhombusArea);
+            }, waterFillColor, waterStrokeColor, clipEdges, this.noisePattern);
         }
 
         if (drawFront) {
             const leftFrontWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
-            ctx.save();
-            wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
-            this.paint(ctx, frontFillColorDark, frontStrokeColor, clipEdges);
-            ctx.restore();
+            this.paint(this.bufferContext, (ctx) => {
+                wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
+            }, frontFillColorDark, frontStrokeColor, clipEdges);
 
             const rightFrontWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
-            ctx.save();
-            wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
-            this.paint(ctx, frontFillColorLight, frontStrokeColor, clipEdges);
-            ctx.restore();
+            this.paint(this.bufferContext, (ctx) => {
+                wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
+            }, frontFillColorLight, frontStrokeColor, clipEdges);
 
             const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
-            ctx.save();
-            rhombusPath(ctx, topRhombusArea);
-            this.paint(ctx, frontFillColor, frontStrokeColor, clipEdges);
-            ctx.restore();
+            this.paint(this.bufferContext, (ctx) => {
+                rhombusPath(ctx, topRhombusArea);
+            }, frontFillColor, frontStrokeColor, clipEdges);
         }
 
         this.canvasContext.clearRect(0, 0, width, height);
@@ -167,14 +156,22 @@ export class Renderer {
 
     paint(
         ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+        pathFunction: (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) => void,
         fillColor: string | null,
         strokeColor: string | null,
         clipEdges: boolean,
         pattern: CanvasPattern | null = null
     ): void {
+        ctx.save();
+        pathFunction(ctx);
         if (fillColor !== null) {
-            ctx.fillStyle = fillColor;
-            ctx.fill();
+            if (pattern !== null) {
+                ctx.fillStyle = fillColor;
+                ctx.fill();
+            } else {
+                ctx.fillStyle = fillColor;
+                ctx.fill();
+            }
             if (pattern !== null) {
                 ctx.globalCompositeOperation = "destination-out";
                 ctx.fillStyle = pattern;
@@ -190,6 +187,7 @@ export class Renderer {
             ctx.stroke();
             ctx.globalCompositeOperation = "source-over";
         }
+        ctx.restore()
     }
 }
 
