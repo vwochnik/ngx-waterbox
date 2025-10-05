@@ -181,7 +181,7 @@ export class Renderer {
                 pathFunction(tmp);
                 tmp.fillStyle = fillColor;
                 tmp.fill();
-                tmp.globalCompositeOperation = "destination-out";
+                tmp.globalCompositeOperation = "overlay";
                 tmp.fillStyle = pattern;
                 tmp.fill();
                 tmp.globalCompositeOperation = "source-over";
