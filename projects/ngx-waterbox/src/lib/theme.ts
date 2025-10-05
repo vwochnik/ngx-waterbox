@@ -228,8 +228,8 @@ function cssPatternVariable(element: HTMLElement, v: string): Pattern | null {
     let size = parseFloat(parts[1] || '0');
     if (isNaN(size)) { size = 0; }
 
-    let alpha = parseFloat(parts[2] || '0.0');
-    if (isNaN(alpha)) { alpha = 0.0; }
+    let alpha = parseFloat(parts[2] || '0.5');
+    if (isNaN(alpha)) { alpha = 0.5; }
 
     return { name, size, alpha };
 }

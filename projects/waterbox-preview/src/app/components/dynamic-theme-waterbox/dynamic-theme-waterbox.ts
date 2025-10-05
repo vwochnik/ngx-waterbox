@@ -56,8 +56,8 @@ export class DynamicThemeWaterbox {
       waterStrokeColor: darken(water, 2*contrast),
       waterPattern: {
         name: "blocky",
-        size: 50,
-        alpha: 0.1
+        size: 0,
+        alpha: 0.5
       },
       strokeWidth: 0.5,
       divisions: 5,
