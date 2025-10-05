@@ -51,6 +51,10 @@ export class Waterbox {
       }
     });
 
+    const rect = this.el.nativeElement.getBoundingClientRect();
+    this.width.set(rect.width);
+    this.height.set(rect.height);
+
     this.destroyRef.onDestroy(() => observer.disconnect());
     observer.observe(this.el.nativeElement);
 
