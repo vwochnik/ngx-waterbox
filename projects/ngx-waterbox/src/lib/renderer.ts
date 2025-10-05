@@ -162,30 +162,38 @@ export class Renderer {
         clipEdges: boolean,
         pattern: CanvasPattern | null = null
     ): void {
-        ctx.save();
-        pathFunction(ctx);
         if (fillColor !== null) {
             if (pattern !== null) {
-                ctx.fillStyle = fillColor;
-                ctx.fill();
+                const tmp = this.tempContext;
+                tmp.save();
+                tmp.clearRect(0, 0, this.width, this.height);
+                pathFunction(tmp);
+                tmp.fillStyle = fillColor;
+                tmp.fill();
+                tmp.globalCompositeOperation = "destination-out";
+                tmp.fillStyle = pattern;
+                tmp.fill();
+                tmp.globalCompositeOperation = "source-over";
+                tmp.restore();
+                ctx.drawImage(tmp.canvas, 0, 0);
             } else {
+                ctx.save();
+                pathFunction(ctx);
                 ctx.fillStyle = fillColor;
                 ctx.fill();
-            }
-            if (pattern !== null) {
-                ctx.globalCompositeOperation = "destination-out";
-                ctx.fillStyle = pattern;
-                ctx.fill();
-                ctx.globalCompositeOperation = "source-over";
+                ctx.restore();
             }
         }
         if (strokeColor !== null) {
+            ctx.save();
+            pathFunction(ctx);
             if (clipEdges) {
                 ctx.globalCompositeOperation = "destination-out";
             }
             ctx.strokeStyle = strokeColor;
             ctx.stroke();
             ctx.globalCompositeOperation = "source-over";
+            ctx.restore();
         }
         ctx.restore()
     }
