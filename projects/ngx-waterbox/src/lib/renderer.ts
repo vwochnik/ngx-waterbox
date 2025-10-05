@@ -21,8 +21,6 @@ export class Renderer {
     private tempCanvas: OffscreenCanvas;
     private tempContext: OffscreenCanvasRenderingContext2D;
 
-    private _theme: Theme = getDefaultTheme();
-
     private cachedBackPattern: CachedPattern;
     private cachedFrontPattern: CachedPattern;
     private cachedWaterPattern: CachedPattern;
@@ -62,15 +60,7 @@ export class Renderer {
         this.cachedWaterPattern = new CachedPattern(this.bufferContext, width, height);
     }
 
-    get theme(): Theme {
-        return this._theme;
-    }
-
-    set theme(value: Theme) {
-        this._theme = value;
-    }
-
-    render(value: number): void {
+    render(value: number, theme: Theme): void {
         const {
             waterFillColor,
             waterFillColorLight,
@@ -89,7 +79,7 @@ export class Renderer {
             separatorSize,
             clipEdges,
             drawFront
-        } = this._theme;
+        } = theme;
 
         const width = this.width,
               height = this.height;
@@ -98,9 +88,9 @@ export class Renderer {
             rect: Area = { x: width/2 - actualWidth/2 + strokeWidth/2, y: strokeWidth/2, w: actualWidth - strokeWidth - 1, h: height - strokeWidth - 1 },
             size: Size = { w: rect.w, h: rect.w/2 };
 
-        const backPattern = this.cachedBackPattern.getPattern(this._theme.backPattern);
-        const frontPattern = this.cachedFrontPattern.getPattern(this._theme.frontPattern);
-        const waterPattern = this.cachedWaterPattern.getPattern(this._theme.waterPattern);
+        const backPattern = this.cachedBackPattern.getPattern(theme.backPattern);
+        const frontPattern = this.cachedFrontPattern.getPattern(theme.frontPattern);
+        const waterPattern = this.cachedWaterPattern.getPattern(theme.waterPattern);
 
         this.bufferContext.clearRect(0, 0, width, height);
 
