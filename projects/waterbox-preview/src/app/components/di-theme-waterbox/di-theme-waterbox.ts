@@ -14,13 +14,14 @@ import { Waterbox, Theme, getFromPartial, WATERBOX_THEME } from 'ngx-waterbox';
   providers: [
     {
       provide: WATERBOX_THEME, useValue: getFromPartial({
-        backFillColor: 'transparent',
-        backFillColorLight: 'transparent',
-        backFillColorDark: 'transparent',
-        backStrokeColor: 'transparent',
-        waterFillColor: 'rgba(68, 188, 68, 0.6)',
-        waterFillColorLight: 'rgba(100, 232, 100, 0.6)',
-        waterFillColorDark: 'rgba(41, 133, 41, 0.6)',
+        backFillColor: 'rgba(80, 80, 111, 1)',
+        backFillColorLight: 'rgba(80, 80, 111, 1)',
+        backFillColorDark: 'rgba(80, 80, 111, 1)',
+        backStrokeColor: 'rgba(80, 80, 111, 1)',
+        waterFillColor: 'rgba(176, 68, 188, 0.6)',
+        waterFillColorLight: 'rgba(176, 68, 188, 0.6)',
+        waterFillColorDark: 'rgba(176, 68, 188, 0.6)',
+        waterStrokeColor: 'rgba(176, 68, 188, 0.6)',
         clipEdges: true
       })
     }
