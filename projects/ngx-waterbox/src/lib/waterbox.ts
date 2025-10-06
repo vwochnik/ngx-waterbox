@@ -1,6 +1,7 @@
 import { Component, inject, ElementRef, DestroyRef, signal, input, viewChild, effect, computed } from '@angular/core';
 
 import { Theme } from './types';
+import { WATERBOX_THEME } from './tokens';
 import { getDefaultTheme, getFromCssVariables } from './theme';
 import { Renderer } from './renderer';
 
@@ -23,6 +24,7 @@ export class Waterbox {
   private destroyRef = inject(DestroyRef);
   private el = inject(ElementRef);
   protected canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
+  protected injectedTheme = inject(WATERBOX_THEME, { optional: true });
 
   value = input.required<number>();
   theme = input<Theme | null>(null);
@@ -44,6 +46,8 @@ export class Waterbox {
     const theme = this.theme();
     if (theme !== null) {
       return theme;
+    } else if (this.injectedTheme) {
+      return this.injectedTheme;
     } else {
       return getFromCssVariables(this.el.nativeElement);
     }

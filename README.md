@@ -140,6 +140,21 @@ theme = getFromPartial({
 });
 ```
 
+## Using an injection token
+
+```
+import { WATERBOX_THEME, getFromPartial } from 'ngx-waterbox'
+
+providers: [
+  // ...
+  {
+    provide: WATERBOX_THEME, useValue: getFromPartial({
+      backFillColor: 'green'
+    })
+  }
+]
+```
+
 3. Pass theme to waterbox component:
 
 ```html
