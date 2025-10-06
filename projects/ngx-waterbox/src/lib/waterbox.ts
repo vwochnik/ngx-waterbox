@@ -39,7 +39,15 @@ export class Waterbox {
       }
       return new Renderer(canvas.nativeElement, width, height);
   })
-  private _theme = signal<Theme>(getDefaultTheme());
+
+  private actualTheme = computed<Theme>(() => {
+    const theme = this.theme();
+    if (theme !== null) {
+      return theme;
+    } else {
+      return getFromCssVariables(this.el.nativeElement);
+    }
+  });
 
   constructor() {
     const observer = new ResizeObserver((entries) => {
@@ -59,18 +67,9 @@ export class Waterbox {
     observer.observe(this.el.nativeElement);
 
     effect(() => {
-      const theme = this.theme();
-      if (theme !== null) {
-        this._theme.set(theme);
-      } else {
-        this._theme.set(getFromCssVariables(this.el.nativeElement));
-      }
-    });
-
-    effect(() => {
       const value = this.value();
       const renderer = this.renderer();
-      const theme = this._theme();
+      const theme = this.actualTheme();
       if (renderer !== null) {
         renderer.render(value, theme);
       }
