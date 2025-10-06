@@ -140,6 +140,12 @@ theme = getFromPartial({
 });
 ```
 
+3. Pass theme to waterbox component:
+
+```html
+<ngx-waterbox [value]="50" [theme]="theme"></ngx-waterbox>
+```
+
 ## Using an injection token
 
 ```
@@ -154,13 +160,6 @@ providers: [
   }
 ]
 ```
-
-3. Pass theme to waterbox component:
-
-```html
-<ngx-waterbox [value]="50" [theme]="theme"></ngx-waterbox>
-```
-
 ## Available patterns
 
 The following patterns are available:
