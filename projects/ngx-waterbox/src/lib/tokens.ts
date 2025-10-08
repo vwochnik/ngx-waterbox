@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
 
-import { Theme } from './types';
+import { WaterboxConfig } from './types';
 
-export const WATERBOX_THEME = new InjectionToken<Theme>('WATERBOX_THEME');
+export const WATERBOX_CONFIG = new InjectionToken<WaterboxConfig>('WATERBOX_CONFIG');

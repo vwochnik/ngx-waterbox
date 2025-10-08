@@ -1,3 +1,7 @@
+export interface WaterboxConfig {
+    theme?: Theme;
+}
+
 export interface Theme {
     backFillColor: string;
     backFillColorLight: string;

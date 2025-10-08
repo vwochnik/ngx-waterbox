@@ -149,15 +149,15 @@ theme = getFromPartial({
 ## Using an injection token
 
 ```
-import { WATERBOX_THEME, getFromPartial } from 'ngx-waterbox'
+import { provideWaterboxConfig, getFromPartial } from 'ngx-waterbox'
 
 providers: [
   // ...
-  {
-    provide: WATERBOX_THEME, useValue: getFromPartial({
+  provideWaterboxConfig({
+    theme: getFromPartial({
       backFillColor: 'green'
     })
-  }
+  })
 ]
 ```
 ## Available patterns

@@ -1,7 +1,7 @@
 import { Component, inject, signal, DestroyRef, computed } from '@angular/core';
 import { TinyColor } from '@ctrl/tinycolor';
 
-import { Waterbox, Theme, getFromPartial, WATERBOX_THEME } from 'ngx-waterbox';
+import { Waterbox, Theme, getFromPartial, provideWaterboxConfig } from 'ngx-waterbox';
 
 @Component({
   selector: 'app-di-theme-waterbox',
@@ -12,8 +12,8 @@ import { Waterbox, Theme, getFromPartial, WATERBOX_THEME } from 'ngx-waterbox';
     />
   `,
   providers: [
-    {
-      provide: WATERBOX_THEME, useValue: getFromPartial({
+    provideWaterboxConfig({
+      theme: getFromPartial({
         backFillColor: 'rgba(80, 80, 111, 1)',
         backFillColorLight: 'rgba(80, 80, 111, 1)',
         backFillColorDark: 'rgba(80, 80, 111, 1)',
@@ -24,7 +24,7 @@ import { Waterbox, Theme, getFromPartial, WATERBOX_THEME } from 'ngx-waterbox';
         waterStrokeColor: 'rgba(176, 68, 188, 0.6)',
         clipEdges: true
       })
-    }
+    })
   ]
 })
 export class DiThemeWaterbox {
