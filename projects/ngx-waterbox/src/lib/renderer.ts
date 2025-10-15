@@ -209,7 +209,7 @@ export class Renderer {
 }
 
 function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area) {
-    const a = Math.min(area.w, area.h),
+    const a = Math.sqrt(area.w*area.h/2),
           b = Math.sqrt(2*a*a);;
 
     ctx.translate(area.x+area.w/2, area.y+area.h/2);
@@ -242,4 +242,3 @@ function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingC
     ctx.lineTo(area.x+area.w/2, area.y);
     ctx.lineTo(area.x+area.w/2+area.w*s, area.y+area.h*s);
 }
-
