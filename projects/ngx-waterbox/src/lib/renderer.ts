@@ -220,17 +220,22 @@ export class Renderer {
         clipEdges: boolean
     ): void {
         const ctx = this.bufferContext;
+        const tmp = this.tempContext;
+        tmp.clearRect(0, 0, this.width, this.height);
+
         pathFunctions.forEach((pathFunction) => {
-            ctx.save();
-            pathFunction(ctx);
-            if (clipEdges) {
-                ctx.globalCompositeOperation = "destination-out";
-            }
-            ctx.strokeStyle = strokeColor;
-            ctx.stroke();
-            ctx.globalCompositeOperation = "source-over";
-            ctx.restore();
+            tmp.save();
+            pathFunction(tmp);
+            tmp.strokeStyle = strokeColor;
+            tmp.stroke();
+            tmp.restore();
         });
+
+        if (clipEdges) {
+            ctx.globalCompositeOperation = "destination-out";
+        }
+        ctx.drawImage(tmp.canvas, 0, 0);
+        ctx.globalCompositeOperation = "source-over";
     }
 }
 
