@@ -96,9 +96,6 @@ export class Renderer {
 
         this.bufferContext.clearRect(0, 0, width, height);
 
-        this.bufferContext.lineWidth = strokeWidth;
-        this.bufferContext.lineCap = "round";
-
         const bottomRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - size.h, w: size.w, h: size.h };
         const leftBackWallArea: Area = { x: rect.x, y: rect.y, w: size.w/2, h: rect.h };
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
@@ -119,7 +116,7 @@ export class Renderer {
             (ctx) => rhombusPath(ctx, bottomRhombusArea),
             (ctx) => wallPath(ctx, leftBackWallArea, size, 0, -size.h/2),
             (ctx) => wallPath(ctx, rightBackWallArea, size, -size.h/2, 0)
-        ], backStrokeColor, clipEdges);
+        ], backStrokeColor, strokeWidth, clipEdges);
 
         if (divisions > 1) {
             const step = 100.0/divisions;
@@ -130,7 +127,7 @@ export class Renderer {
                 paths.push((ctx) => separatorPath(ctx, separatorArea, separatorSize));
             }
 
-            this.paintEdges(paths, backStrokeColor, clipEdges);
+            this.paintEdges(paths, backStrokeColor, strokeWidth, clipEdges);
         }
 
         if (value > 0) {
@@ -156,7 +153,7 @@ export class Renderer {
                 (ctx) => wallPath(ctx, leftFillWallArea, size, 0, size.h/2),
                 (ctx) => wallPath(ctx, rightFillWallArea, size, size.h/2, 0),
                 (ctx) => rhombusPath(ctx, fillTopRhombusArea)
-            ], waterStrokeColor, clipEdges);
+            ], waterStrokeColor, strokeWidth, clipEdges);
         }
 
         if (drawFront) {
@@ -180,7 +177,7 @@ export class Renderer {
                 (ctx) => wallPath(ctx, leftFrontWallArea, size, 0, size.h/2),
                 (ctx) => wallPath(ctx, rightFrontWallArea, size, size.h/2, 0),
                 (ctx) => rhombusPath(ctx, topRhombusArea)
-            ], frontStrokeColor, clipEdges);
+            ], frontStrokeColor, strokeWidth, clipEdges);
         }
 
         this.canvasContext.clearRect(0, 0, width, height);
@@ -218,6 +215,7 @@ export class Renderer {
     paintEdges(
         pathFunctions: PathFunction[],
         strokeColor: string,
+        strokeWidth: number,
         clipEdges: boolean
     ): void {
         const ctx = this.bufferContext;
@@ -228,6 +226,9 @@ export class Renderer {
             tmp.save();
             pathFunction(tmp);
             tmp.strokeStyle = strokeColor;
+            tmp.lineWidth = strokeWidth;
+            tmp.lineCap = "round";
+
             tmp.stroke();
             tmp.restore();
         });

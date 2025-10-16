@@ -22,6 +22,7 @@ import { Waterbox, Theme, getFromPartial, provideWaterboxConfig } from 'ngx-wate
         waterFillColorLight: 'rgba(176, 68, 188, 0.6)',
         waterFillColorDark: 'rgba(176, 68, 188, 0.6)',
         waterStrokeColor: 'rgba(176, 68, 188, 0.6)',
+        strokeWidth: 2,
         clipEdges: true
       })
     })
