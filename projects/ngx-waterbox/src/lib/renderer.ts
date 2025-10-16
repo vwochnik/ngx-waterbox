@@ -176,6 +176,7 @@ export class Renderer {
                 const tmp = this.tempContext;
                 tmp.save();
                 tmp.clearRect(0, 0, this.width, this.height);
+                tmp.beginPath();
                 pathFunction(tmp);
                 tmp.fillStyle = fillColor;
                 tmp.fill();
@@ -187,6 +188,7 @@ export class Renderer {
                 ctx.drawImage(tmp.canvas, 0, 0);
             } else {
                 ctx.save();
+                ctx.beginPath();
                 pathFunction(ctx);
                 ctx.fillStyle = fillColor;
                 ctx.fill();
@@ -195,6 +197,7 @@ export class Renderer {
         }
         if (strokeColor !== null) {
             ctx.save();
+            ctx.beginPath();
             pathFunction(ctx);
             if (clipEdges) {
                 ctx.globalCompositeOperation = "destination-out";
@@ -212,12 +215,13 @@ function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
     const a = Math.sqrt(area.w*area.h/2),
           b = Math.sqrt(2*a*a);;
 
+    ctx.save();
     ctx.translate(area.x+area.w/2, area.y+area.h/2);
     ctx.scale(area.w/b, area.h/b);
     ctx.rotate(Math.PI / 4);
 
-    ctx.beginPath();
     ctx.rect(-a/2, -a/2, a, a);
+    ctx.restore();
 }
 
 function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: Size, leftOffset: number, rightOffset: number): void {
@@ -228,16 +232,16 @@ function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContex
 
     const skewY = (w === 0) ? 0 : (rightOffset - leftOffset) / w;
 
+    ctx.save();
     ctx.translate(x, y + leftOffset);
     ctx.transform(1, skewY, 0, 1, 0, 0);
 
-    ctx.beginPath();
     ctx.rect(0, 0, w, h);
+    ctx.restore();
 }
 
 function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: number): void {
     const s = size / 200.0;
-    ctx.beginPath();
     ctx.moveTo(area.x+area.w/2-area.w*s, area.y+area.h*s);
     ctx.lineTo(area.x+area.w/2, area.y);
     ctx.lineTo(area.x+area.w/2+area.w*s, area.y+area.h*s);
