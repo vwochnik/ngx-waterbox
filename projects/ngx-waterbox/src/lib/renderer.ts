@@ -222,13 +222,17 @@ export class Renderer {
         const tmp = this.tempContext;
         tmp.clearRect(0, 0, this.width, this.height);
 
-        pathFunctions.forEach((pathFunction) => {
+        tmp.lineWidth = strokeWidth;
+        tmp.lineCap = "round";
+
+        pathFunctions.forEach((pathFunction, idx) => {
             tmp.save();
             pathFunction(tmp);
+            tmp.globalCompositeOperation = "destination-out";
+            tmp.strokeStyle = "black";
+            tmp.stroke();
+            tmp.globalCompositeOperation = "source-over";
             tmp.strokeStyle = strokeColor;
-            tmp.lineWidth = strokeWidth;
-            tmp.lineCap = "round";
-
             tmp.stroke();
             tmp.restore();
         });
