@@ -123,13 +123,14 @@ export class Renderer {
 
         if (divisions > 1) {
             const step = 100.0/divisions;
+            const paths: PathFunction[] = [];
 
             for (let s = step; s < 100.0; s += step) {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
-                this.paintEdges([
-                    (ctx) => separatorPath(ctx, separatorArea, separatorSize)
-                ], backStrokeColor, clipEdges);
+                paths.push((ctx) => separatorPath(ctx, separatorArea, separatorSize));
             }
+
+            this.paintEdges(paths, backStrokeColor, clipEdges);
         }
 
         if (value > 0) {
