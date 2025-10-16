@@ -232,7 +232,7 @@ export class Renderer {
             tmp.strokeStyle = "black";
             tmp.stroke();
             tmp.globalCompositeOperation = "source-over";
-            tmp.strokeStyle = strokeColor;
+            tmp.strokeStyle = (clipEdges) ? "black" : strokeColor;
             tmp.stroke();
             tmp.restore();
         });
