@@ -228,13 +228,13 @@ export class Renderer {
         pathFunctions.forEach((pathFunction, idx) => {
             tmp.save();
             pathFunction(tmp);
+            tmp.restore();
             tmp.globalCompositeOperation = "destination-out";
             tmp.strokeStyle = "black";
             tmp.stroke();
             tmp.globalCompositeOperation = "source-over";
             tmp.strokeStyle = (clipEdges) ? "black" : strokeColor;
             tmp.stroke();
-            tmp.restore();
         });
 
         if (clipEdges) {
