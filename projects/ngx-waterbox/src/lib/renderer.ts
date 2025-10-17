@@ -246,7 +246,7 @@ export class Renderer {
 }
 
 function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area) {
-    const a = Math.sqrt(area.w*area.h/2),
+    const a = 0.5 * Math.hypot(area.w, area.h),
           b = Math.sqrt(2*a*a);;
 
     ctx.translate(area.x+area.w/2, area.y+area.h/2);
