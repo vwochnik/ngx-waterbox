@@ -101,21 +101,21 @@ export class Renderer {
         const rightBackWallArea: Area = { x: rect.x+rect.w/2, y: rect.y, w: size.w/2, h: rect.h };
 
         this.paintFilling((ctx) => {
-            rhombusPath(ctx, bottomRhombusArea);
+            rhombusPath(ctx, bottomRhombusArea, "bottom");
         }, backFillColor, backPattern);
 
         this.paintFilling((ctx) => {
-            wallPath(ctx, leftBackWallArea, size, 0, -size.h/2);
+            wallPath(ctx, leftBackWallArea, size, 0, -size.h/2, "back");
         }, backFillColorLight, backPattern);
 
         this.paintFilling((ctx) => {
-            wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
+            wallPath(ctx, rightBackWallArea, size, -size.h/2, 0, "back");
         }, backFillColorDark, backPattern);
 
         const backPaths: PathFunction[] = [
-            (ctx) => rhombusPath(ctx, bottomRhombusArea),
-            (ctx) => wallPath(ctx, leftBackWallArea, size, 0, -size.h/2),
-            (ctx) => wallPath(ctx, rightBackWallArea, size, -size.h/2, 0)
+            (ctx) => rhombusPath(ctx, bottomRhombusArea, "bottom"),
+            (ctx) => wallPath(ctx, leftBackWallArea, size, 0, -size.h/2, "back"),
+            (ctx) => wallPath(ctx, rightBackWallArea, size, -size.h/2, 0, "back")
         ];
 
         if (divisions > 1) {
@@ -137,21 +137,21 @@ export class Renderer {
             const fillTopRhombusArea: Area = { x: rect.x, y: rect.y + rect.h - fillHeight, w: size.w, h: size.h };
 
             this.paintFilling((ctx) => {
-                wallPath(ctx, leftFillWallArea, size, 0, size.h/2);
+                wallPath(ctx, leftFillWallArea, size, 0, size.h/2, "front");
             }, waterFillColorDark, waterPattern);
 
             this.paintFilling((ctx) => {
-                wallPath(ctx, rightFillWallArea, size, size.h/2, 0);
+                wallPath(ctx, rightFillWallArea, size, size.h/2, 0, "front");
             }, waterFillColorLight, waterPattern);
 
             this.paintFilling((ctx) => {
-                rhombusPath(ctx, fillTopRhombusArea);
+                rhombusPath(ctx, fillTopRhombusArea, "top");
             }, waterFillColor, waterPattern);
 
             this.paintEdges([
-                (ctx) => wallPath(ctx, leftFillWallArea, size, 0, size.h/2),
-                (ctx) => wallPath(ctx, rightFillWallArea, size, size.h/2, 0),
-                (ctx) => rhombusPath(ctx, fillTopRhombusArea)
+                (ctx) => wallPath(ctx, leftFillWallArea, size, 0, size.h/2, "front"),
+                (ctx) => wallPath(ctx, rightFillWallArea, size, size.h/2, 0, "front"),
+                (ctx) => rhombusPath(ctx, fillTopRhombusArea, "top")
             ], waterStrokeColor, strokeWidth, clipEdges);
         }
 
@@ -161,21 +161,21 @@ export class Renderer {
             const topRhombusArea: Area = { x: rect.x, y: rect.y, w: size.w, h: size.h };
 
             this.paintFilling((ctx) => {
-                wallPath(ctx, leftFrontWallArea, size, 0, size.h/2);
+                wallPath(ctx, leftFrontWallArea, size, 0, size.h/2, "front");
             }, frontFillColorDark, frontPattern);
 
             this.paintFilling((ctx) => {
-                wallPath(ctx, rightFrontWallArea, size, size.h/2, 0);
+                wallPath(ctx, rightFrontWallArea, size, size.h/2, 0, "front");
             }, frontFillColorLight, frontPattern);
 
             this.paintFilling((ctx) => {
-                rhombusPath(ctx, topRhombusArea);
+                rhombusPath(ctx, topRhombusArea, "top");
             }, frontFillColor, frontPattern);
 
             this.paintEdges([
-                (ctx) => wallPath(ctx, leftFrontWallArea, size, 0, size.h/2),
-                (ctx) => wallPath(ctx, rightFrontWallArea, size, size.h/2, 0),
-                (ctx) => rhombusPath(ctx, topRhombusArea),
+                (ctx) => wallPath(ctx, leftFrontWallArea, size, 0, size.h/2, "front"),
+                (ctx) => wallPath(ctx, rightFrontWallArea, size, size.h/2, 0, "front"),
+                (ctx) => rhombusPath(ctx, topRhombusArea, "top"),
             ], frontStrokeColor, strokeWidth, clipEdges);
         }
 
@@ -245,22 +245,30 @@ export class Renderer {
     }
 }
 
-function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area) {
+function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, position: "top" | "bottom"): void {
     const a = 0.5 * Math.hypot(area.w, area.h),
           b = Math.sqrt(2*a*a);;
 
     ctx.translate(area.x+area.w/2, area.y+area.h/2);
     ctx.scale(area.w/b, area.h/b);
-    ctx.rotate(Math.PI / 4);
+    if (position === "top") {
+        ctx.rotate(Math.PI / 4);
+    } else {
+        ctx.rotate(-Math.PI / 4);
+    }
 
     ctx.beginPath();
     ctx.rect(-a/2, -a/2, a, a);
 
     const scale = area.w/2 / a;
-    ctx.translate(-a/2, -a/2 + area.w/scale);
+    if (position === "top") {
+        ctx.translate(-a/2, -a/2 + area.w/scale);
+    } else {
+        ctx.translate(-a/2, -a/2 + area.w/scale);
+    }
 }
 
-function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: Size, leftOffset: number, rightOffset: number): void {
+function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: Size, leftOffset: number, rightOffset: number, facing: "back" | "front"): void {
     const x = area.x,
           y = area.y+size.h/2,
           w = area.w,
@@ -274,7 +282,7 @@ function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContex
     ctx.beginPath();
     ctx.rect(0, 0, w, h);
 
-    ctx.translate(-x, 0);
+    ctx.translate(-x, (facing === "back") ? h : 0);
 
     const scale = w / Math.hypot(rightOffset - leftOffset, w);
     ctx.scale(scale, 1);
