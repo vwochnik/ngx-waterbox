@@ -88,4 +88,23 @@ export function createGrid(width: number, height: number, cellSize: number, alph
   return off;
 }
 
+export function createCheckeredPattern(cellSize: number, alpha: number): OffscreenCanvas {
+  const off = new OffscreenCanvas(cellSize*2, cellSize*2);
+  const ctx = off.getContext('2d');
+  if (!ctx) {
+    throw new Error('Failed to get 2D context');
+  }
+  ctx.save();
 
+  ctx.globalAlpha = alpha;
+
+  for (let y = 0; y < 2; y++) {
+    for (let x = 0; x < 2; x++) {
+      ctx.fillStyle = (x + y) % 2 === 0 ? '#ffffff' : '#000000';
+      ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+    }
+  }
+
+  ctx.restore();
+  return off;
+}

@@ -1,7 +1,8 @@
 import {
     createCoarseNoise,
     createDotMatrix,
-    createGrid
+    createGrid,
+    createCheckeredPattern
 } from './utils';
 
 export function makePattern(
@@ -43,6 +44,13 @@ export function makePattern(
             throw new Error("failed to create pattern");
         }
         return gridPattern;
+    case "checkered":
+        const checkeredCanvas = createCheckeredPattern(size || width * 0.1, alpha);
+        const checkeredPattern = ctx.createPattern(checkeredCanvas, "repeat");
+        if (!checkeredPattern) {
+            throw new Error("failed to create pattern");
+        }
+        return checkeredPattern;
     default:
         throw new Error(`unknown pattern name: ${name}`);
     }

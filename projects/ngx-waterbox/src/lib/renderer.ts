@@ -270,6 +270,9 @@ function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContex
 
     ctx.beginPath();
     ctx.rect(0, 0, w, h);
+
+    const scale = w / Math.hypot(rightOffset - leftOffset, w);
+    ctx.scale(scale, 1);
 }
 
 function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: number): void {
