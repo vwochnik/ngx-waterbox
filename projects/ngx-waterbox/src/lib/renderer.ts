@@ -112,23 +112,22 @@ export class Renderer {
             wallPath(ctx, rightBackWallArea, size, -size.h/2, 0);
         }, backFillColorDark, backPattern);
 
-        this.paintEdges([
+        const backPaths: PathFunction[] = [
             (ctx) => rhombusPath(ctx, bottomRhombusArea),
             (ctx) => wallPath(ctx, leftBackWallArea, size, 0, -size.h/2),
             (ctx) => wallPath(ctx, rightBackWallArea, size, -size.h/2, 0)
-        ], backStrokeColor, strokeWidth, clipEdges);
+        ];
 
         if (divisions > 1) {
             const step = 100.0/divisions;
-            const paths: PathFunction[] = [];
 
             for (let s = step; s < 100.0; s += step) {
                 const separatorArea: Area = { x: rect.x, y: rect.y + rect.h - size.h - (rect.h - size.h) * s/100.0, w: size.w, h: size.h };
-                paths.push((ctx) => separatorPath(ctx, separatorArea, separatorSize));
+                backPaths.push((ctx) => separatorPath(ctx, separatorArea, separatorSize));
             }
-
-            this.paintEdges(paths, backStrokeColor, strokeWidth, clipEdges);
         }
+
+        this.paintEdges(backPaths, backStrokeColor, strokeWidth, clipEdges);
 
         if (value > 0) {
             const fillHeight = size.h + (value / 100.0 * (rect.h - size.h));
@@ -224,6 +223,7 @@ export class Renderer {
 
         tmp.lineWidth = strokeWidth;
         tmp.lineCap = "round";
+        tmp.lineJoin = "round";
 
         pathFunctions.forEach((pathFunction, idx) => {
             tmp.save();
