@@ -1,23 +1,18 @@
 import { Pattern } from "./types";
-import { makePattern } from "./patterns";
+import { createCanvasFromPattern } from "./utils";
 
 export class CachedPattern {
 
     private lastPattern: Pattern = { name: 'none', size: 0, alpha: 0 };
-    private canvasPattern: CanvasPattern | string = "transparent";
+    private lastCanvas: OffscreenCanvas | null = null;
 
-    constructor(
-        private ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-        private width: number,
-        private height: number
-    ) {}
+    constructor() {}
 
-    getPattern(pattern: Pattern): CanvasPattern | string {
+    getPattern(pattern: Pattern): OffscreenCanvas | null {
         if (patternToString(pattern) !== patternToString(this.lastPattern)) {
-            this.canvasPattern = makePattern(this.ctx, pattern.name, this.width, this.height, pattern.size, pattern.alpha);
-            this.lastPattern = pattern;
+            this.lastCanvas = createCanvasFromPattern(pattern.name, pattern.size, pattern.alpha);
         }
-        return this.canvasPattern
+        return this.lastCanvas;
     }
 }
 

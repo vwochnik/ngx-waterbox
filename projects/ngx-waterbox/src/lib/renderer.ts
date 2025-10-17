@@ -23,9 +23,9 @@ export class Renderer {
     private tempCanvas: OffscreenCanvas;
     private tempContext: OffscreenCanvasRenderingContext2D;
 
-    private cachedBackPattern: CachedPattern;
-    private cachedFrontPattern: CachedPattern;
-    private cachedWaterPattern: CachedPattern;
+    private cachedBackPattern: CachedPattern = new CachedPattern();
+    private cachedFrontPattern: CachedPattern = new CachedPattern();
+    private cachedWaterPattern: CachedPattern = new CachedPattern();
 
     constructor(
         private canvas: HTMLCanvasElement,
@@ -56,10 +56,6 @@ export class Renderer {
         }
 
         this.tempContext = tempContext;
-
-        this.cachedBackPattern = new CachedPattern(this.bufferContext, width, height);
-        this.cachedFrontPattern = new CachedPattern(this.bufferContext, width, height);
-        this.cachedWaterPattern = new CachedPattern(this.bufferContext, width, height);
     }
 
     render(value: number, theme: Theme): void {
@@ -90,9 +86,13 @@ export class Renderer {
             rect: Area = { x: width/2 - actualWidth/2 + strokeWidth/2, y: strokeWidth/2, w: actualWidth - strokeWidth - 1, h: height - strokeWidth - 1 },
             size: Size = { w: rect.w, h: rect.w/2 };
 
-        const backPattern = this.cachedBackPattern.getPattern(theme.backPattern);
-        const frontPattern = this.cachedFrontPattern.getPattern(theme.frontPattern);
-        const waterPattern = this.cachedWaterPattern.getPattern(theme.waterPattern);
+        const backPatternCanvas = this.cachedBackPattern.getPattern(theme.backPattern);
+        const frontPatternCanvas = this.cachedFrontPattern.getPattern(theme.frontPattern);
+        const waterPatternCanvas = this.cachedWaterPattern.getPattern(theme.waterPattern);
+
+        const backPattern = makePattern(this.bufferContext, backPatternCanvas);
+        const frontPattern = makePattern(this.bufferContext, frontPatternCanvas);
+        const waterPattern = makePattern(this.bufferContext, waterPatternCanvas);
 
         this.bufferContext.clearRect(0, 0, width, height);
 
@@ -175,7 +175,7 @@ export class Renderer {
             this.paintEdges([
                 (ctx) => wallPath(ctx, leftFrontWallArea, size, 0, size.h/2),
                 (ctx) => wallPath(ctx, rightFrontWallArea, size, size.h/2, 0),
-                (ctx) => rhombusPath(ctx, topRhombusArea)
+                (ctx) => rhombusPath(ctx, topRhombusArea),
             ], frontStrokeColor, strokeWidth, clipEdges);
         }
 
@@ -256,7 +256,8 @@ function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
     ctx.beginPath();
     ctx.rect(-a/2, -a/2, a, a);
 
-    ctx.translate(a/2, a/2);
+    const scale = area.w/2 / a;
+    ctx.translate(-a/2, -a/2 + area.w/scale);
 }
 
 function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: Size, leftOffset: number, rightOffset: number): void {
@@ -285,4 +286,15 @@ function separatorPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingC
     ctx.moveTo(area.x+area.w/2-area.w*s, area.y+area.h*s);
     ctx.lineTo(area.x+area.w/2, area.y);
     ctx.lineTo(area.x+area.w/2+area.w*s, area.y+area.h*s);
+}
+
+function makePattern(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, canvas: OffscreenCanvas | null): CanvasPattern | string {
+    if (!canvas) {
+        return "transparent";
+    }
+    const pattern = ctx.createPattern(canvas, 'repeat');
+    if (!pattern) {
+        return "transparent";
+    }
+    return pattern;
 }

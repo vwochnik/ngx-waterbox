@@ -1,4 +1,29 @@
-export function createCoarseNoise(width: number, height: number, cellSize: number, alpha: number): OffscreenCanvas {
+export function createCanvasFromPattern(
+    name: string,
+    size: number,
+    alpha: number
+): OffscreenCanvas | null {
+    switch (name) {
+    case "none":
+      return null;
+    case "blocky":
+        return createCoarseNoise(size || 10, alpha);
+    case "noise":
+        return createCoarseNoise(size || 1, alpha);
+    case "dotted":
+        return createDotMatrix(size || 10, alpha);
+    case "grid":
+        return createGrid(size || 10, alpha);
+    case "checkered":
+        return createCheckeredPattern(size || 10, alpha);
+    default:
+        throw new Error(`unknown pattern name: ${name}`);
+    }
+}
+
+export function createCoarseNoise(cellSize: number, alpha: number): OffscreenCanvas {
+  const width = cellSize * 64, height = cellSize * 64;
+
   const off = new OffscreenCanvas(width, height);
   const ctx = off.getContext('2d');
   if (!ctx) {
@@ -25,7 +50,8 @@ export function createCoarseNoise(width: number, height: number, cellSize: numbe
   return off;
 }
 
-export function createDotMatrix(width: number, height: number, spacing: number, alpha: number): OffscreenCanvas {
+export function createDotMatrix(spacing: number, alpha: number): OffscreenCanvas {
+    const width = spacing * 4, height = spacing * 4;
     const dotRadius = spacing * 0.1;
 
   const off = new OffscreenCanvas(width, height);
@@ -57,7 +83,8 @@ export function createDotMatrix(width: number, height: number, spacing: number, 
   return off;
 }
 
-export function createGrid(width: number, height: number, cellSize: number, alpha: number): OffscreenCanvas {
+export function createGrid(cellSize: number, alpha: number): OffscreenCanvas {
+  const width = cellSize * 4, height = cellSize * 4;
   const off = new OffscreenCanvas(width, height);
   const ctx = off.getContext('2d');
   if (!ctx) {
