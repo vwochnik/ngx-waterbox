@@ -255,6 +255,8 @@ function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
 
     ctx.beginPath();
     ctx.rect(-a/2, -a/2, a, a);
+
+    ctx.translate(a/2, a/2);
 }
 
 function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, area: Area, size: Size, leftOffset: number, rightOffset: number): void {
@@ -270,6 +272,8 @@ function wallPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContex
 
     ctx.beginPath();
     ctx.rect(0, 0, w, h);
+
+    ctx.translate(-x, 0);
 
     const scale = w / Math.hypot(rightOffset - leftOffset, w);
     ctx.scale(scale, 1);
