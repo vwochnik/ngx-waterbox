@@ -251,11 +251,7 @@ function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
 
     ctx.translate(area.x+area.w/2, area.y+area.h/2);
     ctx.scale(area.w/b, area.h/b);
-    if (position === "top") {
-        ctx.rotate(Math.PI / 4);
-    } else {
-        ctx.rotate(-Math.PI / 4);
-    }
+    ctx.rotate(Math.PI / 4);
 
     ctx.beginPath();
     ctx.rect(-a/2, -a/2, a, a);
@@ -264,7 +260,7 @@ function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
     if (position === "top") {
         ctx.translate(-a/2, -a/2 + area.w/scale);
     } else {
-        ctx.translate(-a/2, -a/2 + area.w/scale);
+        ctx.translate(a/2 - area.w/scale, a/2);
     }
 }
 

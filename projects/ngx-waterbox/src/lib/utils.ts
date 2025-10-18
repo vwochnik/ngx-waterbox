@@ -16,6 +16,8 @@ export function createCanvasFromPattern(
         return createGrid(size || 10, alpha);
     case "checkered":
         return createCheckeredPattern(size || 10, alpha);
+    case "debug":
+        return createDebugPattern(size || 10, alpha);
     default:
         throw new Error(`unknown pattern name: ${name}`);
     }
@@ -131,6 +133,32 @@ export function createCheckeredPattern(cellSize: number, alpha: number): Offscre
       ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
     }
   }
+
+  ctx.restore();
+  return off;
+}
+
+export function createDebugPattern(size: number, alpha: number): OffscreenCanvas {
+  const off = new OffscreenCanvas(size*2, size*2);
+  const ctx = off.getContext('2d');
+  if (!ctx) {
+    throw new Error('Failed to get 2D context');
+  }
+  ctx.save();
+
+  ctx.globalAlpha = alpha;
+
+  const radius = Math.hypot(size, size);
+
+  const gradient = ctx.createRadialGradient(size, size, 0, size, size, radius);
+
+  gradient.addColorStop(0, "red");
+  gradient.addColorStop(0.25, "yellow");
+  gradient.addColorStop(0.5, "green");
+  gradient.addColorStop(1, "blue");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size*2, size*2);
 
   ctx.restore();
   return off;
