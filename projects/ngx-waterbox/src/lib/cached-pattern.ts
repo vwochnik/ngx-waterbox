@@ -10,6 +10,7 @@ export class CachedPattern {
 
     getPattern(pattern: Pattern): OffscreenCanvas | null {
         if (patternToString(pattern) !== patternToString(this.lastPattern)) {
+            this.lastPattern = pattern;
             this.lastCanvas = createCanvasFromPattern(pattern.name, pattern.size, pattern.alpha);
         }
         return this.lastCanvas;
