@@ -45,9 +45,9 @@ export class DynamicThemeWaterbox {
       waterFillColorDark: darken(water, contrast),
       waterStrokeColor: darken(water, 2*contrast),
       waterPattern: {
-        name: "blocky",
-        size: 0,
-        alpha: 0.5
+        name: "grid",
+        size: 5 + Math.floor(value * 0.125),
+        alpha: 1.0
       },
       strokeWidth: 0.5,
       divisions: 5
@@ -80,4 +80,3 @@ export function alpha(color: string, alpha: number): string {
 	const col = new TinyColor(color);
   return col.setAlpha(alpha).toString();
 }
-
