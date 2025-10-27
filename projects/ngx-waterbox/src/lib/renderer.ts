@@ -256,11 +256,10 @@ function rhombusPath(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCon
     ctx.beginPath();
     ctx.rect(-a/2, -a/2, a, a);
 
-    const scale = area.w/2 / a;
     if (position === "top") {
-        ctx.translate(-a/2, -a/2 + area.w/scale);
+        ctx.translate(-a/2, -a/2 + 2*a);
     } else {
-        ctx.translate(a/2 - area.w/scale, a/2);
+        ctx.translate(a/2 - 2*a, a/2);
     }
 }
 
